@@ -87,7 +87,7 @@ body{
    width: 150px;
    background-color: #c7c7c7;
    height: 30px;
-   margin-right: 5px;
+   margin-right: 2px;
    border-top: 2px solid #f4f4f4;
    border-left: 2px solid #f4f4f4;
    border-right: 2px solid black;
@@ -98,7 +98,7 @@ body{
    width: 150px;
    background-color: #c7c7c7;
    height: 30px;
-   margin-right: 5px;
+   margin-right: 2px;
    background-color: #D9D9D9;
    border-top: 2px solid black;
    border-left: 2px solid black;
@@ -279,4 +279,12 @@ background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rg
 
 .icon-selected p{
    background-color: #00008099;
+}
+ 
+.inactive-window {
+   filter: grayscale(0.8);
+}
+
+.inactive-window .windowname h3{
+   color: rgb(148, 148, 148);
 }
