@@ -70,7 +70,10 @@ body{
 
 #taskbarItems{
    display: flex;
-   overflow: hidden;
+   justify-content: left;
+   max-width: 90%;
+   overflow: clip;
+   margin-right: auto;
 }
 
 .tb-icon{
@@ -95,6 +98,7 @@ body{
 }
 
 .taskbar-block-selected{
+   font-weight: bold;
    width: 150px;
    background-color: #c7c7c7;
    height: 30px;

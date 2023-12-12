@@ -132,21 +132,24 @@ function minimize(windowId, taskbarBlockId) {
   const windowElement = document.getElementById(windowId);
   const taskbarBlock = document.getElementById(taskbarBlockId);
 
-  // Check if the window is focused
-  if (windowElement.classList.contains("inactive-window")) {
-    // If not focused, bring it to the front
-    bringToFront(windowId);
-  }
-  else{
+  // Check if the window is already minimized
+  if (windowElement.style.display === "none") {
     // Toggle the window's display and taskbar block class
-    if (windowElement.style.display === "block") {
+    windowElement.style.display = "block";
+    taskbarBlock.classList.remove("taskbar-block");
+    taskbarBlock.classList.add("taskbar-block-selected");
+    bringToFront(windowId);
+  } 
+  else {
+    // Check if the window is focused
+    if (windowElement.classList.contains("inactive-window")) {
+      // If not focused, bring it to the front
+      bringToFront(windowId);
+    } else {
+      // Toggle the window's display and taskbar block class
       windowElement.style.display = "none";
       taskbarBlock.classList.add("taskbar-block");
       taskbarBlock.classList.remove("taskbar-block-selected");
-    } else {
-      windowElement.style.display = "block";
-      taskbarBlock.classList.remove("taskbar-block");
-      taskbarBlock.classList.add("taskbar-block-selected");
     }
   }
 }
