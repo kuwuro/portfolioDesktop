@@ -547,7 +547,7 @@ function browser() {
         <div class="content">
           <table id="frame" height="100%" width="100%" border="0">
             <tr>
-              <td><iframe id="my_iframe" src="http://www.deltabarks.com" width="100%" height="100%"></iframe></td>
+              <td><iframe id="my_iframe" src="https://www.deltabarks.com" width="100%" height="100%"></iframe></td>
             </tr>
           </table>
         </div>
