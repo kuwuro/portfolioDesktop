@@ -58,8 +58,12 @@ body{
 }
 
 #startButton{
+   display: flex;
+   align-items: center;
+   justify-content: center;
    margin: 0px 10px 0px 2px;
    background-color: #c7c7c7;
+   font-size: 17px;
    height: 35px;
    width: 100px;
    border-top: 3px solid #f4f4f4;
@@ -68,12 +72,79 @@ body{
    border-bottom: 3px solid black;
 }
 
+#startButton img{
+   width: 25px;
+   margin: 0px;
+}
+
+.start-menu-open{
+   font-weight: bold;
+   width: 150px;
+   background-color: #c7c7c7;
+   height: 30px;
+   margin-right: 2px;
+   background-color: #D9D9D9 !important;
+   border-top: 2px solid black !important;
+   border-left: 2px solid black !important;
+   border-right: 2px solid #f4f4f4 !important;
+   border-bottom: 2px solid #f4f4f4 !important;
+}
+
+#startMenu{
+   position: absolute;
+   bottom: 36px;
+   left: 2px;
+   width: 300px;
+   height: 400px;
+   background-color: #c7c7c7;
+   border-top: 2px solid #f4f4f4;
+   border-left: 2px solid #f4f4f4;
+   border-right: 2px solid black;
+   border-bottom: 2px solid black;
+   display: none;
+   z-index: 100000;
+}
+
+#menuSidebar{
+   position: relative;
+   background-color: #9c9c9c;
+   width: 10%;
+}
+
+#menuSidebar p{
+   position: absolute;
+   bottom: 41px;
+   left: -44px;
+   margin: 0px;
+   width: 115px;
+   padding: 5px 0px;
+   font-size: 27px;
+   font-weight: bold;
+   color: #c7c7c7;
+   rotate: -90deg;
+   pointer-events: none;
+}
+
+#menuItems{
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   width: 90%;
+   overflow: clip;
+   margin-right: auto;
+}
+
 #taskbarItems{
    display: flex;
    justify-content: left;
    max-width: 90%;
    overflow: clip;
    margin-right: auto;
+}
+
+#taskbarItems p{
+   pointer-events: none;
 }
 
 .tb-icon{
@@ -122,6 +193,7 @@ body{
    display: flex;
    align-items: center;
    justify-content: center;
+   pointer-events: none;
 }
 
 .window {
@@ -130,6 +202,7 @@ body{
    min-width: 400px;
    min-height: 300px;
    position: absolute;
+   overflow: hidden;
 }
 
 .window .resizer {
@@ -208,15 +281,14 @@ body{
    width: 100%;
    height: 100%;
    background: #c7c7c7;
-   overflow-x: hidden;
-   overflow-y: auto;
+   overflow: hidden;
 }
 
 .window .body .topbar {
    padding: 0px 5px 0px 20px;
    /* background-color: #000080; */
    background: rgb(38,4,118);
-background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rgba(203,45,125,1) 100%);
+   background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rgba(203,45,125,1) 100%);
    height: 40px;
    display: flex;
    align-items: center;
@@ -226,6 +298,7 @@ background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rg
 .window .body .topbar .windowname {
    font-size: 16px;
    color: white;
+   pointer-events: none;
 }
 
 .window .body .topbar .btns {
@@ -244,9 +317,9 @@ background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rg
 }
 
 .window .body .content{
-   padding: 20px;
    width: 100%;
-   max-width: 100%;
+   height: calc(100% - 40px);
+   overflow: auto;
    display: flex;
    justify-content: center;
    align-items: center;   
@@ -291,4 +364,10 @@ background: linear-gradient(90deg, rgba(38,4,118,1) 0%, rgba(38,4,118,1) 65%, rg
 
 .inactive-window .windowname h3{
    color: rgb(148, 148, 148);
+}
+
+iframe{
+   width: 100%;
+   height: 100%;
+   border: none;
 }
