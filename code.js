@@ -4,6 +4,7 @@ const areaWidth = screenWidth * 0.7;
 const areaHeight = screenHeight * 0.7;
 const areaLeft = (screenWidth - areaWidth) / 2;
 const areaTop = (screenHeight - areaHeight) / 2;
+var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
 
@@ -176,7 +177,7 @@ function maximize(windowId) {
       left: windowElement.style.left
     };    
     windowElement.style.width = "100%";
-    windowElement.style.height = "100%";
+    windowElement.style.height = "calc(100% - 40px)";
     windowElement.style.top = "0px";
     windowElement.style.left = "0px";
     isMaximized[windowId] = true;
@@ -190,6 +191,109 @@ function closeWindow(windowId, taskbarBlockId) {
   taskbarBlock.remove();
   windowsOpen--;
 }
+
+document.addEventListener("mousedown", function (event) {
+  const clickedWindow = event.target.closest(".window");
+  const clickedTaskbar = event.target.closest("#taskbar");
+  const clickedIframe = event.target.closest("iframe");
+  const clickedContent = event.target.closest(".content");
+
+  // Check if the clicked element is a window
+  if (clickedWindow) {
+    bringToFront(clickedWindow.id);
+  } else if (!clickedTaskbar && !clickedIframe && !clickedContent) {
+    // If the clicked element is not a window, taskbar item, or iframe, remove focus from all windows
+    removeFocusFromAllWindows();
+  }
+});
+
+function bringToFront(windowId) {
+  const windowElement = document.getElementById(windowId);
+  const windows = document.querySelectorAll(".window");
+  
+  // Check if the clicked window is already focused
+  if (!windowElement.classList.contains("inactive-window")) {
+    return;
+  }
+
+  // Remove grayscaling class from the active window
+  windowElement.classList.remove("inactive-window");
+  
+  // Set the window's z-index to be the maximum + 1
+  windowElement.style.zIndex = getHighestZIndex() + 1;
+  
+  // Apply grayscaling class to other windows
+  windows.forEach((win) => {
+    if (win !== windowElement) {
+      win.classList.add("inactive-window");
+    }
+  });
+  
+  // Update taskbar icons based on the focused window
+  updateTaskbarIcons(windowElement.id);
+}
+
+function updateTaskbarIcons(focusedWindowId) {
+  const taskbarBlocks = document.querySelectorAll(".tb-icon");
+  
+  taskbarBlocks.forEach((block) => {
+    const windowId = block.getAttribute("data-window-id");
+    
+    if (windowId === focusedWindowId) {
+      block.classList.remove("taskbar-block");
+      block.classList.add("taskbar-block-selected");
+    } else {
+      block.classList.remove("taskbar-block-selected");
+      block.classList.add("taskbar-block");
+    }
+  });
+}
+
+// Function to remove focus from all windows
+function removeFocusFromAllWindows() {
+  const windows = document.querySelectorAll(".window");
+  
+  // Remove grayscaling class from all windows
+  windows.forEach((win) => {
+    win.classList.add("inactive-window");
+  });
+}
+
+// Function to get the highest z-index among all windows
+function getHighestZIndex() {
+  const windows = document.querySelectorAll(".window");
+  
+  let maxZIndex = 0;
+  windows.forEach((win) => {
+    const zIndex = parseInt(win.style.zIndex, 10) || 0;
+    maxZIndex = Math.max(maxZIndex, zIndex);
+  });
+  
+  return maxZIndex;
+}
+
+// Start Menu
+const startButton = document.getElementById("startButton");
+const startMenu = document.getElementById("startMenu");
+
+startButton.addEventListener("click", function () {
+  startButton.classList.toggle("start-menu-open");
+  if (startMenuOpen) {
+    startMenu.style.display = "none";
+    startMenuOpen = false;    
+  } else {
+    startMenu.style.display = "flex";
+    startMenuOpen = true;
+  }
+});
+
+document.addEventListener("click", function (event) {
+  if (!startButton.contains(event.target) && !startMenu.contains(event.target)) {
+    startButton.classList.remove("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
+});
 
 // My PC
 const myPCButton = document.getElementById("myPCButton");
@@ -385,80 +489,102 @@ function about() {
   });
 }
 
-document.addEventListener("mousedown", function (event) {
-  const clickedWindow = event.target.closest(".window");
-  const clickedTaskbar = event.target.closest("#taskbar");
+// Projects browser
+const browserButton = document.getElementById("browserButton");
+let clickCount2 = 0;
+let clickTimeout2;
 
-  // Check if the clicked element is a window
-  if (clickedWindow) {
-    bringToFront(clickedWindow.id);
-  } else if (!clickedTaskbar) {
-    // If the clicked element is not a window and not a taskbar item, remove focus from all windows
-    removeFocusFromAllWindows();
+browserButton.addEventListener("click", function () {
+  clickCount2++;
+  if (clickCount2 === 1) {
+    browserButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!browserButton.contains(event.target)) {
+        browserButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout2 = setTimeout(function () {
+      clickCount2 = 0;
+    }, 300);
+  } else if (clickCount2 === 2) {
+    browserButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout1);
+    clickCount2 = 0;
+    browser();
   }
 });
 
-function bringToFront(windowId) {
-  const windowElement = document.getElementById(windowId);
-  const windows = document.querySelectorAll(".window");
+function browser() {
+  const windowId = "about_" + Math.random().toString(36).substr(2, 9);
+  const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
-  // Check if the clicked window is already focused
-  if (!windowElement.classList.contains("inactive-window")) {
-    return;
+  function visit() {
+    var address = document.getElementById("address").value;
+    document.getElementById("my_iframe").src = address;
   }
 
-  // Remove grayscaling class from the active window
-  windowElement.classList.remove("inactive-window");
+  document.getElementById("desktop").insertAdjacentHTML("beforeend", `
+    <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
+      <div class="resizer corner tl"></div>
+      <div class="resizer corner tr"></div>
+      <div class="resizer corner bl"></div>
+      <div class="resizer corner br"></div>
+      <div class="resizer t"></div>
+      <div class="resizer b"></div>
+      <div class="resizer l"></div>
+      <div class="resizer r"></div>      
+      <div class="body">
+        <div class="topbar">
+          <div class="windowname">
+            <h3 class="font">DeltaBark's</h3>
+          </div>
+          <div class="btns">
+            <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+            <button onclick="maximize('${windowId}')">&#10064</button>
+            <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+          </div>
+        </div>
+        <div class="content">
+          <table id="frame" height="100%" width="100%" border="0">
+            <tr>
+              <td><iframe id="my_iframe" src="http://www.deltabarks.com" width="100%" height="100%"></iframe></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>`);
+  windowsOpen++;
+  const browserElement = document.getElementById(windowId);
+  browserElement.style.display = "block";
+  browserElement.style.width = "1350px";
+  browserElement.style.height = "780px";
 
-  // Set the window's z-index to be the maximum + 1
-  windowElement.style.zIndex = getHighestZIndex() + 1;
+  const randomLeft = Math.floor(Math.random() * (areaWidth - browserElement.offsetWidth));
+  const randomTop = Math.floor(Math.random() * (areaHeight - browserElement.offsetHeight));
+  
+  browserElement.style.top = areaTop + randomTop + "px";
+  browserElement.style.left = areaLeft + randomLeft + "px";
+  
+  document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+      <img src="media/browser.png">
+      <p>DeltaBark's</p>
+    </div>
+  `);
+  makeResizable(windowId);
+  makeDraggable(windowId);
+  browserElement.style.zIndex = getHighestZIndex() + 1;
 
-  // Apply grayscaling class to other windows
+  // Update taskbar icons based on the focused window
+  updateTaskbarIcons(windowId);
+  // Add the inactive-window class to all other windows
+  const windows = document.querySelectorAll(".window");
   windows.forEach((win) => {
-    if (win !== windowElement) {
+    if (win !== browserElement) {
       win.classList.add("inactive-window");
     }
   });
-
-  // Update taskbar icons based on the focused window
-  updateTaskbarIcons(windowElement.id);
-}
-
-function updateTaskbarIcons(focusedWindowId) {
-  const taskbarBlocks = document.querySelectorAll(".tb-icon");
-
-  taskbarBlocks.forEach((block) => {
-    const windowId = block.getAttribute("data-window-id");
-
-    if (windowId === focusedWindowId) {
-      block.classList.remove("taskbar-block");
-      block.classList.add("taskbar-block-selected");
-    } else {
-      block.classList.remove("taskbar-block-selected");
-      block.classList.add("taskbar-block");
-    }
+  browserElement.addEventListener("mousedown", function () {
+    bringToFront(windowId);
   });
-}
-
-// Function to remove focus from all windows
-function removeFocusFromAllWindows() {
-  const windows = document.querySelectorAll(".window");
-
-  // Remove grayscaling class from all windows
-  windows.forEach((win) => {
-    win.classList.add("inactive-window");
-  });
-}
-
-// Function to get the highest z-index among all windows
-function getHighestZIndex() {
-  const windows = document.querySelectorAll(".window");
-
-  let maxZIndex = 0;
-  windows.forEach((win) => {
-    const zIndex = parseInt(win.style.zIndex, 10) || 0;
-    maxZIndex = Math.max(maxZIndex, zIndex);
-  });
-
-  return maxZIndex;
 }
