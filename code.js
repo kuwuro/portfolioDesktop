@@ -514,14 +514,21 @@ browserButton.addEventListener("click", function () {
   }
 });
 
+function visit() {
+  var addressInput = document.getElementById('address');
+  var iframe = document.getElementById('my_iframe');
+  iframe.src = addressInput.value;
+}
+
+function handleKeyPress(event) {
+  if (event.keyCode === 13) {
+      visit();
+  }
+}
+
 function browser() {
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
-
-  function visit() {
-    var address = document.getElementById("address").value;
-    document.getElementById("my_iframe").src = address;
-  }
 
   document.getElementById("desktop").insertAdjacentHTML("beforeend", `
     <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
@@ -536,7 +543,7 @@ function browser() {
       <div class="body">
         <div class="topbar">
           <div class="windowname">
-            <h3 class="font">DeltaBark's</h3>
+            <h3 class="font">Browser</h3>
           </div>
           <div class="btns">
             <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
@@ -546,9 +553,17 @@ function browser() {
         </div>
         <div class="content">
           <table id="frame" height="100%" width="100%" border="0">
-            <tr>
-              <td><iframe id="my_iframe" src="https://www.deltabarks.com" width="100%" height="100%"></iframe></td>
-            </tr>
+              <tr>
+                  <td style="margin: 0px; height: 35px;">
+                      <div id="addressbar">
+                        <input type="text" id="address" value="https://www.deltabarks.com" onkeypress="handleKeyPress(event)">
+                        <button onclick="visit()">Go</button>
+                      </div>
+                  </td>
+              </tr>
+              <tr>
+                  <td><iframe id="my_iframe" src="https://www.deltabarks.com" width="100%" height="100%"></iframe></td>
+              </tr>
           </table>
         </div>
       </div>
@@ -556,8 +571,8 @@ function browser() {
   windowsOpen++;
   const browserElement = document.getElementById(windowId);
   browserElement.style.display = "block";
-  browserElement.style.width = "1350px";
-  browserElement.style.height = "780px";
+  browserElement.style.width = "1000px";
+  browserElement.style.height = "550px";
 
   const randomLeft = Math.floor(Math.random() * (areaWidth - browserElement.offsetWidth));
   const randomTop = Math.floor(Math.random() * (areaHeight - browserElement.offsetHeight));
@@ -568,9 +583,10 @@ function browser() {
   document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
     <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
       <img src="media/browser.png">
-      <p>DeltaBark's</p>
+      <p>Browser</p>
     </div>
   `);
+  maximize(windowId);
   makeResizable(windowId);
   makeDraggable(windowId);
   browserElement.style.zIndex = getHighestZIndex() + 1;
