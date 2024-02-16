@@ -8,6 +8,97 @@ var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
 
+const desktopIcons = [
+  { id: "myPC", label: "My PC", iconSrc: "media/root.png", action: () => myPC() },
+  { id: "about", label: "About Me", iconSrc: "media/notepad.png", action: () => about() },
+  { id: "browser1", label: "DeltaBarks", iconSrc: "media/browser.png", action: () => browser("https://www.deltabarks.com") },
+  { id: "browser2", label: "Psycomputers", iconSrc: "media/browser.png", action: () => browser("https://enricarmengol.github.io/psycomputers/") },
+  { id: "browser3", label: "Can Mauri", iconSrc: "media/browser.png", action: () => browser("https://canmauri.com/") }
+];
+
+function generateDesktopIcons() {
+  const desktopIconsTable = document.getElementById("desktopIconsTable");
+  const numRows = 6;
+  const numCols = 13;
+
+  for (let i = 0; i < numRows; i++) {
+    const row = document.createElement("tr");
+
+    for (let j = 0; j < numCols; j++) {
+      const cell = document.createElement("td");
+      const icon = desktopIcons[i * numCols + j];
+
+      // Assign a unique identifier to each cell
+      cell.id = `cell_${i}_${j}`;
+
+      if (icon) {
+        const iconElement = createIconElement(icon);
+        cell.appendChild(iconElement);
+      }
+
+      cell.addEventListener("dragover", handleDragOver);
+      cell.addEventListener("drop", (e) => handleDrop(e, cell.id));
+
+      row.appendChild(cell);
+    }
+    desktopIconsTable.appendChild(row);
+  }
+}
+
+function createIconElement(icon) {
+  const iconElement = document.createElement("div");
+  iconElement.id = icon.id + "Button";
+  iconElement.className = "icon";
+  iconElement.draggable = true;
+  iconElement.innerHTML = `
+    <img src="${icon.iconSrc}" alt="${icon.label}">
+    <p>${icon.label}</p>
+  `;
+  iconElement.addEventListener("dragstart", (e) => handleDragStart(e, icon.id));
+  iconElement.addEventListener("drop", (e) => handleDrop(e, icon.id));
+
+  return iconElement;
+}
+
+function handleDragStart(e, iconId) {
+  e.dataTransfer.setData("text/plain", iconId);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+}
+
+function handleDrop(e, targetCellId) {
+  e.preventDefault();
+  const draggedIconId = e.dataTransfer.getData("text/plain");
+  const draggedElement = document.getElementById(draggedIconId + "Button");
+  const targetCell = document.getElementById(targetCellId);
+
+  if (draggedElement && targetCell) {
+    const draggedCell = draggedElement.closest("td");
+    if (draggedCell !== targetCell) {
+      const tempCell = document.createElement("td");
+
+      draggedCell.replaceWith(tempCell);
+      targetCell.replaceWith(draggedCell);
+      tempCell.replaceWith(targetCell);
+
+      const draggedIcon = desktopIcons.find((item) => item.id + "Button" === draggedIconId);
+      const targetIcon = desktopIcons.find((item) => item.id + "Button" === draggedCell.id.replace("cell_", ""));
+
+      if (draggedIcon) {
+        draggedCell.addEventListener("click", () => draggedIcon.action());
+      }
+
+      if (targetIcon) {
+        targetCell.addEventListener("click", () => targetIcon.action());
+      }
+    }
+  }
+}
+
+generateDesktopIcons();
+
 // Clock
 function currentTime() {
   let date = new Date();
@@ -360,7 +451,7 @@ function myPC() {
   windowsOpen++;
   const myPCElement = document.getElementById(windowId);
   myPCElement.style.display = "block";
-  myPCElement.style.width = "600px";
+  myPCElement.style.width = "700px";
   myPCElement.style.height = "350px";
   
   const randomLeft = Math.floor(Math.random() * (areaWidth - myPCElement.offsetWidth));
@@ -490,7 +581,8 @@ function about() {
 }
 
 // Projects browser
-const browserButton = document.getElementById("browserButton");
+// deltabarks
+const browserButton = document.getElementById("browser1Button");
 let clickCount2 = 0;
 let clickTimeout2;
 
@@ -510,7 +602,57 @@ browserButton.addEventListener("click", function () {
     browserButton.classList.remove("icon-selected");
     clearTimeout(clickTimeout1);
     clickCount2 = 0;
-    browser();
+    browser("https://www.deltabarks.com");
+  }
+});
+
+// psycomputers
+const browserButton2 = document.getElementById("browser2Button");
+let clickCount3 = 0;
+let clickTimeout3;
+
+browserButton2.addEventListener("click", function () {
+  clickCount3++;
+  if (clickCount3 === 1) {
+    browserButton2.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!browserButton2.contains(event.target)) {
+        browserButton2.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout3 = setTimeout(function () {
+      clickCount3 = 0;
+    }, 300);
+  } else if (clickCount3 === 2) {
+    browserButton2.classList.remove("icon-selected");
+    clearTimeout(clickTimeout1);
+    clickCount3 = 0;
+    browser("https://enricarmengol.github.io/psycomputers/");
+  }
+});
+
+//can mauri
+const browserButton3 = document.getElementById("browser3Button");
+let clickCount4 = 0;
+let clickTimeout4;
+
+browserButton3.addEventListener("click", function () {
+  clickCount4++;
+  if (clickCount4 === 1) {
+    browserButton3.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!browserButton3.contains(event.target)) {
+        browserButton3.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout4 = setTimeout(function () {
+      clickCount4 = 0;
+    }, 300);
+  } else if (clickCount4 === 2) {
+    browserButton3.classList.remove("icon-selected");
+    clearTimeout(clickTimeout1);
+    clickCount4 = 0;
+    browser("https://canmauri.com/");
   }
 });
 
@@ -520,13 +662,17 @@ function visit() {
   iframe.src = addressInput.value;
 }
 
+function openTab(target) {
+  window.open(target, '_blank');
+}
+
 function handleKeyPress(event) {
   if (event.keyCode === 13) {
       visit();
   }
 }
 
-function browser() {
+function browser(option) {
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -551,18 +697,19 @@ function browser() {
             <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
           </div>
         </div>
-        <div class="content">
+        <div class="browserContent">
           <table id="frame" height="100%" width="100%" border="0">
               <tr>
                   <td style="margin: 0px; height: 35px;">
                       <div id="addressbar">
-                        <input type="text" id="address" value="https://www.deltabarks.com" onkeypress="handleKeyPress(event)">
+                        <input type="text" id="address" value="${option}" onkeypress="handleKeyPress(event)">
                         <button onclick="visit()">Go</button>
+                        <button onclick="openTab('${option}')">Open in a new tab</button>
                       </div>
                   </td>
               </tr>
               <tr>
-                  <td><iframe id="my_iframe" src="https://www.deltabarks.com" width="100%" height="100%"></iframe></td>
+                  <td><iframe id="my_iframe" src="${option}" width="100%" height="100%"></iframe></td>
               </tr>
           </table>
         </div>
@@ -591,9 +738,7 @@ function browser() {
   makeDraggable(windowId);
   browserElement.style.zIndex = getHighestZIndex() + 1;
 
-  // Update taskbar icons based on the focused window
   updateTaskbarIcons(windowId);
-  // Add the inactive-window class to all other windows
   const windows = document.querySelectorAll(".window");
   windows.forEach((win) => {
     if (win !== browserElement) {
