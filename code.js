@@ -10,10 +10,16 @@ var focusedWindow = null;
 
 const desktopIcons = [
   { id: "myPC", label: "My PC", iconSrc: "media/root.png", action: () => myPC() },
-  { id: "about", label: "About Me", iconSrc: "media/notepad.png", action: () => about() },
-  { id: "browser1", label: "DeltaBarks", iconSrc: "media/browser.png", action: () => browser("https://www.deltabarks.com") },
-  { id: "browser2", label: "Psycomputers", iconSrc: "media/browser.png", action: () => browser("https://enricarmengol.github.io/psycomputers/") },
-  { id: "browser3", label: "Can Mauri", iconSrc: "media/browser.png", action: () => browser("https://canmauri.com/") }
+  { id: "about", label: "About", iconSrc: "media/notepad.png", action: () => about() },
+  { id: "experience", label: "Experience", iconSrc: "media/experience.png", action: () => experience() },
+  { id: "contact", label: "Contact", iconSrc: "media/contact.png", action: () => contact() },
+  { id: "help", label: "Help", iconSrc: "media/help.png", action: () => help()},
+  { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects()},
+  { id: "goback", label: "Go back", iconSrc: "media/goback.png", action: () => goBack()},
+  { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com") },
+  { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/") },
+  { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/") },
+  { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://enricarmengol.github.io/deltashop/") },
 ];
 
 function generateDesktopIcons() {
@@ -21,23 +27,40 @@ function generateDesktopIcons() {
   const numRows = 7;
   const numCols = 13;
 
+  const iconPositions = {
+    "myPC": { row: 0, col: 0 },
+    "projects": { row: 0, col: 1 },
+    "browser1": { row: 0, col: 2 },
+    "browser3": { row: 0, col: 3 },
+    "help": { row: 0, col: 11 },
+    "goback": { row: 0, col: 12 },
+    "about": { row: 1, col: 0 },
+    "browser2": { row: 1, col: 1 },
+    "browser4": { row: 1, col: 2 },
+    "experience": { row: 2, col: 0 },
+    "contact": { row: 3, col: 0 },
+  };
+
   for (let i = 0; i < numRows; i++) {
     const row = document.createElement("tr");
 
     for (let j = 0; j < numCols; j++) {
       const cell = document.createElement("td");
-      const icon = desktopIcons[i * numCols + j];
+      const cellId = `cell_${i}_${j}`;
+      cell.id = cellId;
 
-      // Assign a unique identifier to each cell
-      cell.id = `cell_${i}_${j}`;
+      const iconId = Object.keys(iconPositions).find(
+        (iconId) => iconPositions[iconId].row === i && iconPositions[iconId].col === j
+      );
 
-      if (icon) {
+      if (iconId) {
+        const icon = desktopIcons.find((item) => item.id === iconId);
         const iconElement = createIconElement(icon);
         cell.appendChild(iconElement);
       }
 
       cell.addEventListener("dragover", handleDragOver);
-      cell.addEventListener("drop", (e) => handleDrop(e, cell.id));
+      cell.addEventListener("drop", (e) => handleDrop(e, cellId));
 
       row.appendChild(cell);
     }
@@ -656,6 +679,31 @@ browserButton3.addEventListener("click", function () {
   }
 });
 
+// deltashop
+const browserButton4 = document.getElementById("browser4Button");
+let clickCount5 = 0;
+let clickTimeout5;
+
+browserButton4.addEventListener("click", function () {
+  clickCount5++;
+  if (clickCount5 === 1) {
+    browserButton4.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!browserButton4.contains(event.target)) {
+        browserButton4.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout5 = setTimeout(function () {
+      clickCount5 = 0;
+    }, 300);
+  } else if (clickCount5 === 2) {
+    browserButton4.classList.remove("icon-selected");
+    clearTimeout(clickTimeout1);
+    clickCount5 = 0;
+    browser("https://enricarmengol.github.io/deltashop/");
+  }
+});
+
 function visit() {
   var addressInput = document.getElementById('address');
   var iframe = document.getElementById('my_iframe');
@@ -709,7 +757,7 @@ function browser(option) {
                   </td>
               </tr>
               <tr>
-                  <td><iframe id="my_iframe" src="${option}" width="100%" height="100%"></iframe></td>
+                  <td class="iframe_loading"><iframe id="my_iframe" src="${option}" width="100%" height="100%"></iframe></td>
               </tr>
           </table>
         </div>
