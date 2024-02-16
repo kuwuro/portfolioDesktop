@@ -1,7 +1,7 @@
 const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
-const areaWidth = screenWidth * 0.7;
-const areaHeight = screenHeight * 0.7;
+const areaWidth = screenWidth * 0.5;
+const areaHeight = screenHeight * 0.5;
 const areaLeft = (screenWidth - areaWidth) / 2;
 const areaTop = (screenHeight - areaHeight) / 2;
 var startMenuOpen = false;
@@ -15,7 +15,7 @@ const desktopIcons = [
   { id: "contact", label: "Contact", iconSrc: "media/contact.png", action: () => contact() },
   { id: "help", label: "Help", iconSrc: "media/help.png", action: () => help()},
   { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects()},
-  { id: "goback", label: "Go back", iconSrc: "media/goback.png", action: () => goBack()},
+  { id: "goback", label: "Switch portfolio", iconSrc: "media/goback.png", action: () => goBack()},
   { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com") },
   { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/") },
   { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/") },
@@ -493,9 +493,7 @@ function myPC() {
   makeDraggable(windowId);
   myPCElement.style.zIndex = getHighestZIndex() + 1;
 
-  // Update taskbar icons based on the focused window
   updateTaskbarIcons(windowId);
-  // Add the inactive-window class to all other windows
   const windows = document.querySelectorAll(".window");
   windows.forEach((win) => {
     if (win !== myPCElement) {
@@ -589,9 +587,7 @@ function about() {
   makeDraggable(windowId);
   aboutElement.style.zIndex = getHighestZIndex() + 1;
 
-  // Update taskbar icons based on the focused window
   updateTaskbarIcons(windowId);
-  // Add the inactive-window class to all other windows
   const windows = document.querySelectorAll(".window");
   windows.forEach((win) => {
     if (win !== aboutElement) {
@@ -795,5 +791,76 @@ function browser(option) {
   });
   browserElement.addEventListener("mousedown", function () {
     bringToFront(windowId);
+  });
+}
+
+const goBackButton = document.getElementById("gobackButton");
+let clickCount6 = 0;
+let clickTimeout6;
+
+goBackButton.addEventListener("click", function () {
+  clickCount6++;
+  if (clickCount6 === 1) {
+    goBackButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!goBackButton.contains(event.target)) {
+        goBackButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout6 = setTimeout(function () {
+      clickCount6 = 0;
+    }, 300);
+  } else if (clickCount6 === 2) {
+    goBackButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout6);
+    clickCount6 = 0;
+    goBack();
+  }
+});
+
+function goBack() {
+  const overlay = document.createElement("div");
+  overlay.style.margin = "0";
+  overlay.style.padding = "0";
+  overlay.style.position = "fixed";
+  overlay.style.zIndex = "2000";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "black";
+  overlay.style.opacity = "0";
+  overlay.style.transition = "opacity 0.5s";
+  document.body.appendChild(overlay);
+
+  const secondOverlay = document.createElement("div");
+  secondOverlay.style.margin = "0";
+  secondOverlay.style.padding = "0";
+  secondOverlay.style.position = "fixed";
+  secondOverlay.style.zIndex = "2001";
+  secondOverlay.style.top = "0";
+  secondOverlay.style.left = "0";
+  secondOverlay.style.width = "100%";
+  secondOverlay.style.height = "100%";
+  secondOverlay.style.background = "url('media/wallpapers/wallpapertransition.png') no-repeat center center";
+  secondOverlay.style.backgroundSize = "cover";
+  secondOverlay.style.opacity = "0";
+  secondOverlay.style.transition = "opacity 1.0s";
+  document.body.appendChild(secondOverlay);
+
+  function fadeToBlack() {
+    overlay.style.opacity = "1";
+    document.getElementById("taskbar").style.zIndex = "0";
+  }
+
+  setTimeout(fadeToBlack, 0);
+
+  overlay.addEventListener("transitionend", function () {
+    setTimeout(function () {
+      secondOverlay.style.opacity = "1";
+      secondOverlay.addEventListener("transitionend", function () {
+        window.location.href = "https://enricarmengol.com";
+      });
+    }, 500);
   });
 }
