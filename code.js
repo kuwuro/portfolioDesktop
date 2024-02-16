@@ -18,7 +18,7 @@ const desktopIcons = [
 
 function generateDesktopIcons() {
   const desktopIconsTable = document.getElementById("desktopIconsTable");
-  const numRows = 6;
+  const numRows = 7;
   const numCols = 13;
 
   for (let i = 0; i < numRows; i++) {
