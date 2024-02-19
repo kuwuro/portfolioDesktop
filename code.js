@@ -1276,7 +1276,7 @@ function goBack() {
   secondOverlay.style.background = "url('media/wallpapers/wallpapertransition.png') no-repeat center center";
   secondOverlay.style.backgroundSize = "cover";
   secondOverlay.style.opacity = "0";
-  secondOverlay.style.transition = "opacity 1.2s";
+  secondOverlay.style.transition = "opacity 1.5s";
   document.body.appendChild(secondOverlay);
 
   function fadeToBlack() {
@@ -1292,6 +1292,6 @@ function goBack() {
       secondOverlay.addEventListener("transitionend", function () {
         window.location.href = "https://portfolio-peach-chi-53.vercel.app";
       });
-    }, 200);
+    }, 500);
   });
 }
