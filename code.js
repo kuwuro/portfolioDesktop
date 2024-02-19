@@ -8,22 +8,22 @@ var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
 
-window.onload = function () {
-  document.getElementById("taskbar").style.zIndex = "0";
-  const bootOverlay = document.createElement("div");
-  bootOverlay.style.margin = "0";
-  bootOverlay.style.padding = "0";
-  bootOverlay.style.position = "fixed";
-  bootOverlay.style.zIndex = "2000";
-  bootOverlay.style.top = "0";
-  bootOverlay.style.left = "0";
-  bootOverlay.style.width = "100%";
-  bootOverlay.style.height = "100%";
-  bootOverlay.style.backgroundColor = "black";
-  bootOverlay.style.opacity = "1";
-  bootOverlay.style.transition = "opacity 1s";
-  document.body.appendChild(bootOverlay);
-  
+document.getElementById("taskbar").style.zIndex = "0";
+const bootOverlay = document.createElement("div");
+bootOverlay.style.margin = "0";
+bootOverlay.style.padding = "0";
+bootOverlay.style.position = "fixed";
+bootOverlay.style.zIndex = "2000";
+bootOverlay.style.top = "0";
+bootOverlay.style.left = "0";
+bootOverlay.style.width = "100%";
+bootOverlay.style.height = "100%";
+bootOverlay.style.backgroundColor = "black";
+bootOverlay.style.opacity = "1";
+bootOverlay.style.transition = "opacity 1s";
+document.body.appendChild(bootOverlay);
+
+window.onload = function () {  
   function fadeToBlack() {
     bootOverlay.style.opacity = "0";
     document.getElementById("taskbar").style.zIndex = "2000";
