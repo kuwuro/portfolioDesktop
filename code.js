@@ -637,7 +637,7 @@ browserButton.addEventListener("click", function () {
     browserButton.classList.remove("icon-selected");
     clearTimeout(clickTimeout1);
     clickCount2 = 0;
-    browser("https://www.deltabarks.com");
+    browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png");
   }
 });
 
@@ -662,7 +662,7 @@ browserButton2.addEventListener("click", function () {
     browserButton2.classList.remove("icon-selected");
     clearTimeout(clickTimeout1);
     clickCount3 = 0;
-    browser("https://enricarmengol.github.io/psycomputers/");
+    browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
   }
 });
 
@@ -687,7 +687,7 @@ browserButton3.addEventListener("click", function () {
     browserButton3.classList.remove("icon-selected");
     clearTimeout(clickTimeout1);
     clickCount4 = 0;
-    browser("https://canmauri.com/");
+    browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png");
   }
 });
 
@@ -712,7 +712,7 @@ browserButton4.addEventListener("click", function () {
     browserButton4.classList.remove("icon-selected");
     clearTimeout(clickTimeout1);
     clickCount5 = 0;
-    browser("https://enricarmengol.github.io/deltashop/");
+    browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
   }
 });
 
@@ -732,7 +732,7 @@ function handleKeyPress(event) {
   }
 }
 
-function browser(option) {
+function browser(option, name, icon) {
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -749,7 +749,7 @@ function browser(option) {
       <div class="body">
         <div class="topbar">
           <div class="windowname">
-            <h3 class="font">Browser</h3>
+            <h3 class="font">${name}</h3>
           </div>
           <div class="btns">
             <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
@@ -789,8 +789,8 @@ function browser(option) {
   
   document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
     <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
-      <img src="media/browser.png">
-      <p>Browser</p>
+      <img src="${icon}">
+      <p>${name}</p>
     </div>
   `);
   maximize(windowId);
