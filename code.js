@@ -1292,6 +1292,6 @@ function goBack() {
       secondOverlay.addEventListener("transitionend", function () {
         window.location.href = "https://portfolio-peach-chi-53.vercel.app";
       });
-    }, 500);
+    }, 200);
   });
 }
