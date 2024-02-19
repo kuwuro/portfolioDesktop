@@ -9,34 +9,13 @@ var windowsOpen = 0;
 var focusedWindow = null;
 
 document.getElementById("taskbar").style.zIndex = "0";
-const bootOverlay = document.createElement("div");
-bootOverlay.style.margin = "0";
-bootOverlay.style.padding = "0";
-bootOverlay.style.position = "fixed";
-bootOverlay.style.zIndex = "2000";
-bootOverlay.style.top = "0";
-bootOverlay.style.left = "0";
-bootOverlay.style.width = "100%";
-bootOverlay.style.height = "100%";
-bootOverlay.style.backgroundColor = "black";
-bootOverlay.style.opacity = "1";
-bootOverlay.style.transition = "opacity 1s";
-document.body.appendChild(bootOverlay);
-const bootLogo = document.createElement("img");
-bootLogo.src = "media/loading.gif";
-bootLogo.style.position = "fixed";
-bootLogo.style.zIndex = "2001";
-bootLogo.style.top = "50%";
-bootLogo.style.left = "50%";
-bootLogo.style.transform = "translate(-50%, -50%)";
-bootLogo.style.width = "50px";
-bootLogo.style.height = "50px";
-document.body.appendChild(bootLogo);
+const bootOverlay = document.getElementById("bootOverlay");
+const bootLogo = document.getElementById("bootLogo");
 
 window.onload = function () {  
   function fadeToBlack() {
     bootOverlay.style.opacity = "0";
-    document.getElementById("taskbar").style.zIndex = "2000";
+    document.getElementById("taskbar").style.zIndex = "1999";
   }  
   setTimeout(fadeToBlack, 300);
   bootOverlay.addEventListener("transitionend", function () {
