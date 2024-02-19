@@ -22,6 +22,16 @@ bootOverlay.style.backgroundColor = "black";
 bootOverlay.style.opacity = "1";
 bootOverlay.style.transition = "opacity 1s";
 document.body.appendChild(bootOverlay);
+const bootLogo = document.createElement("img");
+bootLogo.src = "media/loading.gif";
+bootLogo.style.position = "fixed";
+bootLogo.style.zIndex = "2001";
+bootLogo.style.top = "50%";
+bootLogo.style.left = "50%";
+bootLogo.style.transform = "translate(-50%, -50%)";
+bootLogo.style.width = "50px";
+bootLogo.style.height = "50px";
+document.body.appendChild(bootLogo);
 
 window.onload = function () {  
   function fadeToBlack() {
@@ -31,6 +41,7 @@ window.onload = function () {
   setTimeout(fadeToBlack, 300);
   bootOverlay.addEventListener("transitionend", function () {
     bootOverlay.remove();
+    bootLogo.remove();
   });
 }
 
