@@ -232,6 +232,28 @@ body{
    border-bottom: 2px solid #f4f4f4;
 }
 
+.context-menu {
+   position: fixed;
+   z-index: 10000;
+   background-color: #dbdbdb;
+   border-top: 2px solid #f4f4f4;
+   border-left: 2px solid #f4f4f4;
+   border-right: 2px solid black;
+   border-bottom: 2px solid black;
+   min-width: 120px;
+ }
+
+ .context-menu-option {
+   padding: 8px 12px;
+   cursor: pointer;
+   user-select: none;
+ }
+
+ .context-menu-option:hover {
+   background-color: #2e0a88;
+   color: white;
+ }
+
 #time{
    margin: 0px 2px;
    background-color: #c7c7c7;
