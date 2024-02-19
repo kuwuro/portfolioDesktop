@@ -7,24 +7,36 @@ const areaTop = (screenHeight - areaHeight) / 2;
 var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
-
-document.addEventListener('contextmenu', event => event.preventDefault());
-
-document.getElementById("taskbar").style.zIndex = "0";
 const bootOverlay = document.getElementById("bootOverlay");
 const bootLogo = document.getElementById("bootLogo");
+const responsive = window.matchMedia("(max-width: 800px)");
 
-window.onload = function () {  
-  function fadeToBlack() {
-    bootOverlay.style.opacity = "0";
-    document.getElementById("taskbar").style.zIndex = "1999";
-  }  
-  setTimeout(fadeToBlack, 300);
-  bootOverlay.addEventListener("transitionend", function () {
-    bootOverlay.remove();
-    bootLogo.remove();
-  });
+// mediaquery for phones
+if (responsive.matches) {
+  const bootContent = document.getElementById("bootContent");
+  bootContent.innerHTML = `
+  <img id="bootLogo" src="media/error.png">
+  <h3>Bad news :(</h3>
+  <p>Sorry, but this experience is only available on desktop devices.</p>
+  <p>Check it out later on a bigger screen!</p>
+  <button onclick="goBack()">Go back</button>
+  `;
+} else{
+  document.getElementById("taskbar").style.zIndex = "0";
+  window.onload = function () {  
+    function fadeToBlack() {
+      bootOverlay.style.opacity = "0";
+      document.getElementById("taskbar").style.zIndex = "1999";
+    }  
+    setTimeout(fadeToBlack, 300);
+    bootOverlay.addEventListener("transitionend", function () {
+      bootOverlay.remove();
+      bootLogo.remove();
+    });
+  }
 }
+
+document.addEventListener('contextmenu', event => event.preventDefault());
 
 const desktopIcons = [
   { id: "myPC", label: "My PC", iconSrc: "media/root.png", action: () => myPC() },
@@ -1254,7 +1266,7 @@ function goBack() {
   overlay.style.margin = "0";
   overlay.style.padding = "0";
   overlay.style.position = "fixed";
-  overlay.style.zIndex = "2000";
+  overlay.style.zIndex = "2005";
   overlay.style.top = "0";
   overlay.style.left = "0";
   overlay.style.width = "100%";
@@ -1268,7 +1280,7 @@ function goBack() {
   secondOverlay.style.margin = "0";
   secondOverlay.style.padding = "0";
   secondOverlay.style.position = "fixed";
-  secondOverlay.style.zIndex = "2001";
+  secondOverlay.style.zIndex = "2006";
   secondOverlay.style.top = "0";
   secondOverlay.style.left = "0";
   secondOverlay.style.width = "100%";
