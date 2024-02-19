@@ -42,8 +42,19 @@ body{
    opacity: 1;
    transition: opacity 1s;
 }
+
+#bootOverlay p{
+   position: fixed;
+   padding: 40px 0px 0px 0px;
+   z-index: 2001;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   font-size: 20px;
+   color: white;
+}
  
- #bootLogo {
+#bootLogo {
    position: fixed;
    z-index: 2001;
    top: 50%;
