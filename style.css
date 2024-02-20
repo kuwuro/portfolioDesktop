@@ -29,10 +29,20 @@ body{
    overflow: hidden;
 }
 
+@media screen and (max-width: 800px) {
+   body{
+      width: 10%;
+   }   
+}
+
 #bootOverlay {
    margin: 0;
    padding: 0;
    position: fixed;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
    z-index: 2000;
    top: 0;
    left: 0;
@@ -43,26 +53,52 @@ body{
    transition: opacity 1s;
 }
 
-#bootOverlay p{
-   position: fixed;
-   padding: 40px 0px 0px 0px;
-   z-index: 2001;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   font-size: 20px;
-   color: white;
-}
- 
 #bootLogo {
-   position: fixed;
-   z-index: 2001;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
    width: 50px;
 }
 
+@media screen and (max-width: 800px) {
+   #bootLogo {
+      width: 120px;
+   }   
+}
+
+#bootContent{
+   color: white;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+   width: 70%;
+   text-align: center;
+}
+
+#bootContent h3{
+   font-size: 2.5em;
+   margin-top: 10px;
+   margin-bottom: 0px;
+}
+
+#bootContent p{
+   margin: 0px;
+   padding: 20px 0px 0px 0px;
+   z-index: 2001;
+   font-size: 20px;
+}
+
+#bootContent button{
+   margin: 20px 0px 0px 0px;
+   padding: 10px 20px;
+   background-color: #c7c7c7;
+   border-top: 2px solid #f4f4f4;
+   border-left: 2px solid #f4f4f4;
+   border-right: 2px solid black;
+   border-bottom: 2px solid black;
+   font-family: Win95;
+   font-size: 20px;
+   cursor: pointer;
+}
 
 #desktop {
    background: url("media/wallpapers/wallpaperdefault.jpg");
@@ -231,6 +267,28 @@ body{
    border-right: 2px solid #f4f4f4;
    border-bottom: 2px solid #f4f4f4;
 }
+
+.context-menu {
+   position: fixed;
+   z-index: 10000;
+   background-color: #dbdbdb;
+   border-top: 2px solid #f4f4f4;
+   border-left: 2px solid #f4f4f4;
+   border-right: 2px solid black;
+   border-bottom: 2px solid black;
+   min-width: 120px;
+ }
+
+ .context-menu-option {
+   padding: 8px 12px;
+   cursor: pointer;
+   user-select: none;
+ }
+
+ .context-menu-option:hover {
+   background-color: #2e0a88;
+   color: white;
+ }
 
 #time{
    margin: 0px 2px;

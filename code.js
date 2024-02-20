@@ -7,22 +7,36 @@ const areaTop = (screenHeight - areaHeight) / 2;
 var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
-
-document.getElementById("taskbar").style.zIndex = "0";
 const bootOverlay = document.getElementById("bootOverlay");
 const bootLogo = document.getElementById("bootLogo");
+const responsive = window.matchMedia("(max-width: 800px)");
 
-window.onload = function () {  
-  function fadeToBlack() {
-    bootOverlay.style.opacity = "0";
-    document.getElementById("taskbar").style.zIndex = "1999";
-  }  
-  setTimeout(fadeToBlack, 300);
-  bootOverlay.addEventListener("transitionend", function () {
-    bootOverlay.remove();
-    bootLogo.remove();
-  });
+// mediaquery for phones
+if (responsive.matches) {
+  const bootContent = document.getElementById("bootContent");
+  bootContent.innerHTML = `
+  <img id="bootLogo" src="media/error.png">
+  <h3>Bad news :(</h3>
+  <p>Sorry, but this experience is only available on desktop devices.</p>
+  <p>Check it out later on a bigger screen!</p>
+  <button onclick="goBack()">Go back</button>
+  `;
+} else{
+  document.getElementById("taskbar").style.zIndex = "0";
+  window.onload = function () {  
+    function fadeToBlack() {
+      bootOverlay.style.opacity = "0";
+      document.getElementById("taskbar").style.zIndex = "1999";
+    }  
+    setTimeout(fadeToBlack, 300);
+    bootOverlay.addEventListener("transitionend", function () {
+      bootOverlay.remove();
+      bootLogo.remove();
+    });
+  }
 }
+
+document.addEventListener('contextmenu', event => event.preventDefault());
 
 const desktopIcons = [
   { id: "myPC", label: "My PC", iconSrc: "media/root.png", action: () => myPC() },
@@ -379,6 +393,42 @@ function updateTaskbarIcons(focusedWindowId) {
   });
 }
 
+// close menu on right-click
+let currentContextMenu = null;
+function handleTaskbarRightClick(event, windowId, taskbarBlockId) {
+  event.preventDefault();
+  bringToFront(windowId);
+  const mouseX = event.clientX;
+  const mouseY = event.clientY - 35;
+  if (currentContextMenu) {
+    currentContextMenu.style.top = `${mouseY}px`;
+    currentContextMenu.style.left = `${mouseX}px`;
+  } else {
+    const contextMenu = document.createElement("div");
+    contextMenu.classList.add("context-menu");
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+    const closeOption = document.createElement("div");
+    closeOption.classList.add("context-menu-option");
+    closeOption.innerText = "Close";
+    closeOption.addEventListener("click", function () {
+      closeWindow(windowId, taskbarBlockId);
+      document.body.removeChild(contextMenu);
+      currentContextMenu = null;
+    });
+    contextMenu.appendChild(closeOption);
+
+    document.body.appendChild(contextMenu);
+    currentContextMenu = contextMenu;
+
+    document.addEventListener("click", function closeContextMenu() {
+      document.body.removeChild(contextMenu);
+      document.removeEventListener("click", closeContextMenu);
+      currentContextMenu = null;
+    });
+  }
+}
+
 // Function to remove focus from all windows
 function removeFocusFromAllWindows() {
   const windows = document.querySelectorAll(".window");
@@ -500,7 +550,7 @@ function myPC() {
   myPCElement.style.left = areaLeft + randomLeft + "px";
   
   document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
-    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
       <img src="media/root.png">
       <p>My PC</p>
     </div>
@@ -594,7 +644,7 @@ function about() {
   aboutElement.style.left = areaLeft + randomLeft + "px";
   
   document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
-    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
       <img src="media/notepad.png">
       <p>About Me</p>
     </div>
@@ -611,6 +661,288 @@ function about() {
     }
   });
   aboutElement.addEventListener("mousedown", function () {
+    bringToFront(windowId);
+  });
+}
+
+// experience
+const experienceButton = document.getElementById("experienceButton");
+let clickCount7 = 0;
+let clickTimeout7;
+
+experienceButton.addEventListener("click", function () {
+  clickCount7++;
+  if (clickCount7 === 1) {
+    experienceButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!experienceButton.contains(event.target)) {
+        experienceButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout7 = setTimeout(function () {
+      clickCount7 = 0;
+    }, 300);
+  } else if (clickCount7 === 2) {
+    experienceButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout7);
+    clickCount7 = 0;
+    experience();
+  }
+});
+
+function experience() {
+  const windowId = "experience_" + Math.random().toString(36).substr(2, 9);
+  const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
+
+  document.getElementById("desktop").insertAdjacentHTML("beforeend", `
+    <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
+      <div class="resizer corner tl"></div>
+      <div class="resizer corner tr"></div>
+      <div class="resizer corner bl"></div>
+      <div class="resizer corner br"></div>
+      <div class="resizer t"></div>
+      <div class="resizer b"></div>
+      <div class="resizer l"></div>
+      <div class="resizer r"></div>      
+      <div class="body">
+        <div class="topbar">
+          <div class="windowname">
+            <h3 class="font">Experience</h3>
+          </div>
+          <div class="btns">
+            <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+            <button onclick="maximize('${windowId}')">&#10064</button>
+            <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="description">
+          <p>this will be the experience page</p>
+          </div>
+          <div class="image">
+            <img src="media/pc.gif" alt="pc">
+          </div>
+        </div>
+      </div>
+    </div>`);
+  windowsOpen++;
+  const experienceElement = document.getElementById(windowId);
+  experienceElement.style.display = "block";
+  experienceElement.style.width = "600px";
+  experienceElement.style.height = "350px";
+
+  const randomLeft = Math.floor(Math.random() * (areaWidth - experienceElement.offsetWidth));
+  const randomTop = Math.floor(Math.random() * (areaHeight - experienceElement.offsetHeight));
+  
+  experienceElement.style.top = areaTop + randomTop + "px";
+  experienceElement.style.left = areaLeft + randomLeft + "px";
+
+  document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+      <img src="media/experience.png">
+      <p>Experience</p>
+    </div>
+  `);
+  makeResizable(windowId);
+  makeDraggable(windowId);
+  experienceElement.style.zIndex = getHighestZIndex() + 1;
+
+  updateTaskbarIcons(windowId);
+  const windows = document.querySelectorAll(".window");
+  windows.forEach((win) => {
+    if (win !== experienceElement) {
+      win.classList.add("inactive-window");
+    }
+  });
+  experienceElement.addEventListener("mousedown", function () {
+    bringToFront(windowId);
+  });
+}
+
+// contact
+const contactButton = document.getElementById("contactButton");
+let clickCount8 = 0;
+let clickTimeout8;
+
+contactButton.addEventListener("click", function () {
+  clickCount8++;
+  if (clickCount8 === 1) {
+    contactButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!contactButton.contains(event.target)) {
+        contactButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout8 = setTimeout(function () {
+      clickCount8 = 0;
+    }, 300);
+  } else if (clickCount8 === 2) {
+    contactButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout8);
+    clickCount8 = 0;
+    contact();
+  }
+});
+
+function contact() {
+  const windowId = "contact_" + Math.random().toString(36).substr(2, 9);
+  const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
+
+  document.getElementById("desktop").insertAdjacentHTML("beforeend", `
+    <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
+      <div class="resizer corner tl"></div>
+      <div class="resizer corner tr"></div>
+      <div class="resizer corner bl"></div>
+      <div class="resizer corner br"></div>
+      <div class="resizer t"></div>
+      <div class="resizer b"></div>
+      <div class="resizer l"></div>
+      <div class="resizer r"></div>      
+      <div class="body">
+        <div class="topbar">
+          <div class="windowname">
+            <h3 class="font">Contact</h3>
+          </div>
+          <div class="btns">
+            <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+            <button onclick="maximize('${windowId}')">&#10064</button>
+            <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="description">
+          <p>this will be the contact page</p>
+          </div>
+          <div class="image">
+            <img src="media/pc.gif" alt="pc">
+          </div>
+        </div>
+      </div>
+    </div>`);
+  windowsOpen++;
+  const contactElement = document.getElementById(windowId);
+  contactElement.style.display = "block";
+  contactElement.style.width = "600px";
+  contactElement.style.height = "350px";
+
+  const randomLeft = Math.floor(Math.random() * (areaWidth - contactElement.offsetWidth));
+  const randomTop = Math.floor(Math.random() * (areaHeight - contactElement.offsetHeight));
+
+  contactElement.style.top = areaTop + randomTop + "px";
+  contactElement.style.left = areaLeft + randomLeft + "px";
+
+  document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+      <img src="media/contact.png">
+      <p>Contact</p>
+    </div>
+  `);
+  makeResizable(windowId);
+  makeDraggable(windowId);
+  contactElement.style.zIndex = getHighestZIndex() + 1;
+
+  updateTaskbarIcons(windowId);
+  const windows = document.querySelectorAll(".window");
+  windows.forEach((win) => {
+    if (win !== contactElement) {
+      win.classList.add("inactive-window");
+    }
+  });
+  contactElement.addEventListener("mousedown", function () {
+    bringToFront(windowId);
+  });
+}
+
+// Projects
+const projectsButton = document.getElementById("projectsButton");
+let clickCount9 = 0;
+let clickTimeout9;
+
+projectsButton.addEventListener("click", function () {
+  clickCount9++;
+  if (clickCount9 === 1) {
+    projectsButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!projectsButton.contains(event.target)) {
+        projectsButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout9 = setTimeout(function () {
+      clickCount9 = 0;
+    }, 300);
+  } else if (clickCount9 === 2) {
+    projectsButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout9);
+    clickCount9 = 0;
+    projects();
+  }
+});
+
+function projects() {
+  const windowId = "projects_" + Math.random().toString(36).substr(2, 9);
+  const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
+
+  document.getElementById("desktop").insertAdjacentHTML("beforeend", `
+    <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
+      <div class="resizer corner tl"></div>
+      <div class="resizer corner tr"></div>
+      <div class="resizer corner bl"></div>
+      <div class="resizer corner br"></div>
+      <div class="resizer t"></div>
+      <div class="resizer b"></div>
+      <div class="resizer l"></div>
+      <div class="resizer r"></div>      
+      <div class="body">
+        <div class="topbar">
+          <div class="windowname">
+            <h3 class="font">Projects</h3>
+          </div>
+          <div class="btns">
+            <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+            <button onclick="maximize('${windowId}')">&#10064</button>
+            <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="description">
+          <p>this will be the projects page</p>
+          </div>
+          <div class="image">
+            <img src="media/pc.gif" alt="pc">
+          </div>
+        </div>
+      </div>
+    </div>`);
+  windowsOpen++;
+  const projectsElement = document.getElementById(windowId);
+  projectsElement.style.display = "block";
+  projectsElement.style.width = "600px";
+  projectsElement.style.height = "350px";
+
+  const randomLeft = Math.floor(Math.random() * (areaWidth - projectsElement.offsetWidth));
+  const randomTop = Math.floor(Math.random() * (areaHeight - projectsElement.offsetHeight));
+
+  projectsElement.style.top = areaTop + randomTop + "px";
+  projectsElement.style.left = areaLeft + randomLeft + "px";
+
+  document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+      <img src="media/projects.png">
+      <p>Projects</p>
+    </div>
+  `);
+  makeResizable(windowId);
+  makeDraggable(windowId);
+  projectsElement.style.zIndex = getHighestZIndex() + 1;
+
+  updateTaskbarIcons(windowId);
+  const windows = document.querySelectorAll(".window");
+  windows.forEach((win) => {
+    if (win !== projectsElement) {
+      win.classList.add("inactive-window");
+    }
+  });
+  projectsElement.addEventListener("mousedown", function () {
     bringToFront(windowId);
   });
 }
@@ -788,7 +1120,7 @@ function browser(option, name, icon) {
   browserElement.style.left = areaLeft + randomLeft + "px";
   
   document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
-    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
       <img src="${icon}">
       <p>${name}</p>
     </div>
@@ -834,12 +1166,107 @@ goBackButton.addEventListener("click", function () {
   }
 });
 
+// help
+const helpButton = document.getElementById("helpButton");
+let clickCount10 = 0;
+let clickTimeout10;
+
+helpButton.addEventListener("click", function () {
+  clickCount10++;
+  if (clickCount10 === 1) {
+    helpButton.classList.add("icon-selected");
+    document.addEventListener("click", function (event) {
+      if (!helpButton.contains(event.target)) {
+        helpButton.classList.remove("icon-selected");
+      }
+    });
+    clickTimeout10 = setTimeout(function () {
+      clickCount10 = 0;
+    }, 300);
+  } else if (clickCount10 === 2) {
+    helpButton.classList.remove("icon-selected");
+    clearTimeout(clickTimeout10);
+    clickCount10 = 0;
+    help();
+  }
+});
+
+function help() {
+  const windowId = "help_" + Math.random().toString(36).substr(2, 9);
+  const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
+
+  document.getElementById("desktop").insertAdjacentHTML("beforeend", `
+    <div id="${windowId}" class="window" style="display: none; z-index: ${windowsOpen}">
+      <div class="resizer corner tl"></div>
+      <div class="resizer corner tr"></div>
+      <div class="resizer corner bl"></div>
+      <div class="resizer corner br"></div>
+      <div class="resizer t"></div>
+      <div class="resizer b"></div>
+      <div class="resizer l"></div>
+      <div class="resizer r"></div>      
+      <div class="body">
+        <div class="topbar">
+          <div class="windowname">
+            <h3 class="font">Help</h3>
+          </div>
+          <div class="btns">
+            <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+            <button onclick="maximize('${windowId}')">&#10064</button>
+            <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="description">
+          <p>this will be the help page</p>
+          </div>
+          <div class="image">
+            <img src="media/pc.gif" alt="pc">
+          </div>
+        </div>
+      </div>
+    </div>`);
+  windowsOpen++;
+
+  const helpElement = document.getElementById(windowId);
+  helpElement.style.display = "block";
+  helpElement.style.width = "600px";
+  helpElement.style.height = "350px";
+
+  const randomLeft = Math.floor(Math.random() * (areaWidth - helpElement.offsetWidth));
+  const randomTop = Math.floor(Math.random() * (areaHeight - helpElement.offsetHeight));
+
+  helpElement.style.top = areaTop + randomTop + "px";
+  helpElement.style.left = areaLeft + randomLeft + "px";
+
+  document.getElementById("taskbarItems").insertAdjacentHTML("beforeend", `
+    <div id="${taskbarBlockId}" data-window-id="${windowId}" onclick="minimize('${windowId}', '${taskbarBlockId}')" oncontextmenu="handleTaskbarRightClick(event, '${windowId}', '${taskbarBlockId}')" class="tb-icon taskbar-block font">
+      <img src="media/help.png">
+      <p>Help</p>
+    </div>
+  `);
+  makeResizable(windowId);
+  makeDraggable(windowId);
+  helpElement.style.zIndex = getHighestZIndex() + 1;
+
+  updateTaskbarIcons(windowId);
+  const windows = document.querySelectorAll(".window");
+  windows.forEach((win) => {
+    if (win !== helpElement) {
+      win.classList.add("inactive-window");
+    }
+  });
+  helpElement.addEventListener("mousedown", function () {
+    bringToFront(windowId);
+  });
+}
+
 function goBack() {
   const overlay = document.createElement("div");
   overlay.style.margin = "0";
   overlay.style.padding = "0";
   overlay.style.position = "fixed";
-  overlay.style.zIndex = "2000";
+  overlay.style.zIndex = "2005";
   overlay.style.top = "0";
   overlay.style.left = "0";
   overlay.style.width = "100%";
@@ -853,7 +1280,7 @@ function goBack() {
   secondOverlay.style.margin = "0";
   secondOverlay.style.padding = "0";
   secondOverlay.style.position = "fixed";
-  secondOverlay.style.zIndex = "2001";
+  secondOverlay.style.zIndex = "2006";
   secondOverlay.style.top = "0";
   secondOverlay.style.left = "0";
   secondOverlay.style.width = "100%";
@@ -861,7 +1288,7 @@ function goBack() {
   secondOverlay.style.background = "url('media/wallpapers/wallpapertransition.png') no-repeat center center";
   secondOverlay.style.backgroundSize = "cover";
   secondOverlay.style.opacity = "0";
-  secondOverlay.style.transition = "opacity 1.0s";
+  secondOverlay.style.transition = "opacity 1.5s";
   document.body.appendChild(secondOverlay);
 
   function fadeToBlack() {
