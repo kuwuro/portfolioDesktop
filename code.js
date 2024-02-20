@@ -869,7 +869,7 @@ function goBack() {
     document.getElementById("taskbar").style.zIndex = "0";
   }
 
-  setTimeout(fadeToBlack, 0);
+  setTimeout(fadeToBlack, 50);
 
   overlay.addEventListener("transitionend", function () {
     setTimeout(function () {
