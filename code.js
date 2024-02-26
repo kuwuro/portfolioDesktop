@@ -2,8 +2,8 @@ const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
 const areaWidth = screenWidth * 0.5;
 const areaHeight = screenHeight * 0.5;
-const areaLeft = (screenWidth - areaWidth) / 2;
-const areaTop = (screenHeight - areaHeight) / 2;
+const areaLeft = (screenWidth - areaWidth) / 3;
+const areaTop = (screenHeight - areaHeight) / 3;
 var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
@@ -32,6 +32,9 @@ if (responsive.matches) {
     bootOverlay.addEventListener("transitionend", function () {
       bootOverlay.remove();
       bootLogo.remove();
+      setTimeout(() => {
+        myPC();
+      } , 500);
     });
   }
 }
@@ -46,15 +49,16 @@ const desktopIcons = [
   { id: "help", label: "Help", iconSrc: "media/help.png", action: () => help()},
   { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects()},
   { id: "goback", label: "Switch portfolio", iconSrc: "media/goback.png", action: () => goBack()},
-  { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com") },
-  { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/") },
-  { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/") },
-  { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://enricarmengol.github.io/deltashop/") },
+  { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png") },
+  { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png") },
+  { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png") },
+  { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png") },
 ];
 
 function generateDesktopIcons() {
   const desktopIconsTable = document.getElementById("desktopIconsTable");
-  const numRows = 7;
+  desktopIconsTable.innerHTML = "";
+  const numRows = 13;
   const numCols = 13;
 
   const iconPositions = {
@@ -96,6 +100,17 @@ function generateDesktopIcons() {
     }
     desktopIconsTable.appendChild(row);
   }
+  myPCButton();
+  aboutButton();
+  experienceButton();
+  contactButton();
+  projectsButton();
+  helpButton();
+  goBackButton();
+  browser1Button();
+  browser2Button();
+  browser3Button();
+  browser4Button();
 }
 
 function createIconElement(icon) {
@@ -109,6 +124,7 @@ function createIconElement(icon) {
   `;
   iconElement.addEventListener("dragstart", (e) => handleDragStart(e, icon.id));
   iconElement.addEventListener("drop", (e) => handleDrop(e, icon.id));
+  iconElement.addEventListener("contextmenu", (e) => handleIconRightClick(e));
 
   return iconElement;
 }
@@ -421,13 +437,118 @@ function handleTaskbarRightClick(event, windowId, taskbarBlockId) {
     document.body.appendChild(contextMenu);
     currentContextMenu = contextMenu;
 
-    document.addEventListener("click", function closeContextMenu() {
+    document.addEventListener("click", function closeContextMenu(e) {
+      if (currentContextMenu) {
+        if (!currentContextMenu.contains(e.target)) {
+          document.body.removeChild(currentContextMenu);
+          document.removeEventListener("click", closeContextMenu);
+          currentContextMenu = null;
+        }
+      }
+    });    
+  }
+}
+
+function handleIconRightClick(event) {
+  event.preventDefault();
+  const allIcons = document.querySelectorAll('.icon');
+  allIcons.forEach(icon => icon.classList.remove("icon-selected"));
+
+  const iconElement = event.target.closest('.icon');
+  if (iconElement) {
+    iconElement.classList.add("icon-selected");
+  }
+
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  if (currentContextMenu) {
+    currentContextMenu.style.top = `${mouseY}px`;
+    currentContextMenu.style.left = `${mouseX}px`;
+  } else {
+    const contextMenu = document.createElement("div");
+    contextMenu.classList.add("context-menu");
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+
+    const OpenOption = document.createElement("div");
+    OpenOption.classList.add("context-menu-option");
+    OpenOption.innerHTML = "<strong>Open</strong>";
+    OpenOption.addEventListener("click", function () {
+      const iconId = iconElement.id.replace("Button", "");
+      const icon = desktopIcons.find((item) => item.id === iconId);
+      icon.action();
+      iconElement.classList.remove("icon-selected");
       document.body.removeChild(contextMenu);
+      currentContextMenu = null;
+    });
+    contextMenu.appendChild(OpenOption);
+    const closeOption = document.createElement("div");
+    closeOption.classList.add("context-menu-option");
+    closeOption.innerText = "Delete";
+    closeOption.addEventListener("click", function () {
+      const iconCell = iconElement.closest('td');
+      iconCell.innerHTML = "";
+      iconElement.classList.remove("icon-selected");
+      document.body.removeChild(contextMenu);
+      currentContextMenu = null;
+    });
+    contextMenu.appendChild(closeOption);
+    document.body.appendChild(contextMenu);
+    currentContextMenu = contextMenu;
+    document.addEventListener("click", function closeContextMenu(e) {
+      if (!e.target.closest('.icon')) {
+        iconElement.classList.remove("icon-selected");
+        if (document.body.contains(contextMenu)) {
+          document.body.removeChild(contextMenu);
+        }
+        document.removeEventListener("click", closeContextMenu);
+        currentContextMenu = null;
+      }
+    });
+  }
+}
+
+function handleDesktopRightClick(event) {
+  event.preventDefault();
+
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  if (currentContextMenu) {
+    currentContextMenu.style.top = `${mouseY}px`;
+    currentContextMenu.style.left = `${mouseX}px`;
+  } else {
+    const contextMenu = document.createElement("div");
+    contextMenu.classList.add("context-menu");
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+
+    const resetIconsOption = document.createElement("div");
+    resetIconsOption.classList.add("context-menu-option");
+    resetIconsOption.innerText = "Reset Icons";
+    resetIconsOption.addEventListener("click", function () {
+      generateDesktopIcons();
+      document.body.removeChild(contextMenu);
+      currentContextMenu = null;
+    });
+
+    contextMenu.appendChild(resetIconsOption);
+
+    document.body.appendChild(contextMenu);
+    currentContextMenu = contextMenu;
+
+    document.addEventListener("click", function closeContextMenu() {
+      if (document.body.contains(contextMenu)) {
+        document.body.removeChild(contextMenu);
+      }
       document.removeEventListener("click", closeContextMenu);
       currentContextMenu = null;
     });
   }
 }
+
+document.getElementById("desktopIconsTable").addEventListener("contextmenu", handleDesktopRightClick);
 
 // Function to remove focus from all windows
 function removeFocusFromAllWindows() {
@@ -476,29 +597,31 @@ document.addEventListener("click", function (event) {
 });
 
 // My PC
-const myPCButton = document.getElementById("myPCButton");
-let clickCount = 0;
-let clickTimeout;
-
-myPCButton.addEventListener("click", function () {
-  clickCount++;
-  if (clickCount === 1) {
-    myPCButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!myPCButton.contains(event.target)) {
-        myPCButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout = setTimeout(function () {
+function myPCButton(){
+  const myPCButton = document.getElementById("myPCButton");
+  let clickCount = 0;
+  let clickTimeout;
+  
+  myPCButton.addEventListener("click", function () {
+    clickCount++;
+    if (clickCount === 1) {
+      myPCButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!myPCButton.contains(event.target)) {
+          myPCButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout = setTimeout(function () {
+        clickCount = 0;
+      }, 300);
+    } else if (clickCount === 2) {
+      myPCButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout);
       clickCount = 0;
-    }, 300);
-  } else if (clickCount === 2) {
-    myPCButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout);
-    clickCount = 0;
-    myPC();
-  }
-});
+      myPC();
+    }
+  });
+}
 
 function myPC() {
   const windowId = "myPC_" + Math.random().toString(36).substr(2, 9);
@@ -530,6 +653,7 @@ function myPC() {
             <h1>Enric Armengol</h1>
             <h2>web designer & developer</h2>
             <p>Welcome to my interactive portfolio.<br>Explore my work that merges aesthetics with functionality, and discover things you didn't think possible on a browser.</p>
+            <p>If you don't know where to start, double-click on the <strong>Help</strong> icon.<br> You can find it in the desktop's <strong>top right corner</strong>.</p>
           </div>
           <div class="image">
             <img src="media/pc.gif" alt="pc">
@@ -572,29 +696,31 @@ function myPC() {
 }
 
 // About Me
-const aboutButton = document.getElementById("aboutButton");
-let clickCount1 = 0;
-let clickTimeout1;
+function aboutButton(){
+  const aboutButton = document.getElementById("aboutButton");
+  let clickCount1 = 0;
+  let clickTimeout1;
 
-aboutButton.addEventListener("click", function () {
-  clickCount1++;
-  if (clickCount1 === 1) {
-    aboutButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!aboutButton.contains(event.target)) {
-        aboutButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout1 = setTimeout(function () {
+  aboutButton.addEventListener("click", function () {
+    clickCount1++;
+    if (clickCount1 === 1) {
+      aboutButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!aboutButton.contains(event.target)) {
+          aboutButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout1 = setTimeout(function () {
+        clickCount1 = 0;
+      }, 300);
+    } else if (clickCount1 === 2) {
+      aboutButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout1);
       clickCount1 = 0;
-    }, 300);
-  } else if (clickCount1 === 2) {
-    aboutButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout1);
-    clickCount1 = 0;
-    about();
-  }
-});
+      about();
+    }
+  });
+}
 
 function about() {
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
@@ -666,29 +792,31 @@ function about() {
 }
 
 // experience
-const experienceButton = document.getElementById("experienceButton");
-let clickCount7 = 0;
-let clickTimeout7;
+function experienceButton(){
+  const experienceButton = document.getElementById("experienceButton");
+  let clickCount7 = 0;
+  let clickTimeout7;
 
-experienceButton.addEventListener("click", function () {
-  clickCount7++;
-  if (clickCount7 === 1) {
-    experienceButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!experienceButton.contains(event.target)) {
-        experienceButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout7 = setTimeout(function () {
+  experienceButton.addEventListener("click", function () {
+    clickCount7++;
+    if (clickCount7 === 1) {
+      experienceButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!experienceButton.contains(event.target)) {
+          experienceButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout7 = setTimeout(function () {
+        clickCount7 = 0;
+      }, 300);
+    } else if (clickCount7 === 2) {
+      experienceButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout7);
       clickCount7 = 0;
-    }, 300);
-  } else if (clickCount7 === 2) {
-    experienceButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout7);
-    clickCount7 = 0;
-    experience();
-  }
-});
+      experience();
+    }
+  });
+}
 
 function experience() {
   const windowId = "experience_" + Math.random().toString(36).substr(2, 9);
@@ -760,29 +888,31 @@ function experience() {
 }
 
 // contact
-const contactButton = document.getElementById("contactButton");
-let clickCount8 = 0;
-let clickTimeout8;
+function contactButton(){
+  const contactButton = document.getElementById("contactButton");
+  let clickCount8 = 0;
+  let clickTimeout8;
 
-contactButton.addEventListener("click", function () {
-  clickCount8++;
-  if (clickCount8 === 1) {
-    contactButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!contactButton.contains(event.target)) {
-        contactButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout8 = setTimeout(function () {
+  contactButton.addEventListener("click", function () {
+    clickCount8++;
+    if (clickCount8 === 1) {
+      contactButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!contactButton.contains(event.target)) {
+          contactButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout8 = setTimeout(function () {
+        clickCount8 = 0;
+      }, 300);
+    } else if (clickCount8 === 2) {
+      contactButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout8);
       clickCount8 = 0;
-    }, 300);
-  } else if (clickCount8 === 2) {
-    contactButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout8);
-    clickCount8 = 0;
-    contact();
-  }
-});
+      contact();
+    }
+  });
+}
 
 function contact() {
   const windowId = "contact_" + Math.random().toString(36).substr(2, 9);
@@ -854,29 +984,31 @@ function contact() {
 }
 
 // Projects
-const projectsButton = document.getElementById("projectsButton");
-let clickCount9 = 0;
-let clickTimeout9;
+function projectsButton(){
+  const projectsButton = document.getElementById("projectsButton");
+  let clickCount9 = 0;
+  let clickTimeout9;
 
-projectsButton.addEventListener("click", function () {
-  clickCount9++;
-  if (clickCount9 === 1) {
-    projectsButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!projectsButton.contains(event.target)) {
-        projectsButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout9 = setTimeout(function () {
+  projectsButton.addEventListener("click", function () {
+    clickCount9++;
+    if (clickCount9 === 1) {
+      projectsButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!projectsButton.contains(event.target)) {
+          projectsButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout9 = setTimeout(function () {
+        clickCount9 = 0;
+      }, 300);
+    } else if (clickCount9 === 2) {
+      projectsButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout9);
       clickCount9 = 0;
-    }, 300);
-  } else if (clickCount9 === 2) {
-    projectsButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout9);
-    clickCount9 = 0;
-    projects();
-  }
-});
+      projects();
+    }
+  });
+}
 
 function projects() {
   const windowId = "projects_" + Math.random().toString(36).substr(2, 9);
@@ -949,104 +1081,112 @@ function projects() {
 
 // Projects browser
 // deltabarks
-const browserButton = document.getElementById("browser1Button");
-let clickCount2 = 0;
-let clickTimeout2;
+function browser1Button(){
+  const browserButton = document.getElementById("browser1Button");
+  let clickCount2 = 0;
+  let clickTimeout2;
 
-browserButton.addEventListener("click", function () {
-  clickCount2++;
-  if (clickCount2 === 1) {
-    browserButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!browserButton.contains(event.target)) {
-        browserButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout2 = setTimeout(function () {
+  browserButton.addEventListener("click", function () {
+    clickCount2++;
+    if (clickCount2 === 1) {
+      browserButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!browserButton.contains(event.target)) {
+          browserButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout2 = setTimeout(function () {
+        clickCount2 = 0;
+      }, 300);
+    } else if (clickCount2 === 2) {
+      browserButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout2);
       clickCount2 = 0;
-    }, 300);
-  } else if (clickCount2 === 2) {
-    browserButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout1);
-    clickCount2 = 0;
-    browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png");
-  }
-});
+      browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png");
+    }
+  });
+}
 
 // psycomputers
-const browserButton2 = document.getElementById("browser2Button");
-let clickCount3 = 0;
-let clickTimeout3;
+function browser2Button(){
+  const browserButton2 = document.getElementById("browser2Button");
+  let clickCount3 = 0;
+  let clickTimeout3;
 
-browserButton2.addEventListener("click", function () {
-  clickCount3++;
-  if (clickCount3 === 1) {
-    browserButton2.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!browserButton2.contains(event.target)) {
-        browserButton2.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout3 = setTimeout(function () {
+  browserButton2.addEventListener("click", function () {
+    clickCount3++;
+    if (clickCount3 === 1) {
+      browserButton2.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!browserButton2.contains(event.target)) {
+          browserButton2.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout3 = setTimeout(function () {
+        clickCount3 = 0;
+      }, 300);
+    } else if (clickCount3 === 2) {
+      browserButton2.classList.remove("icon-selected");
+      clearTimeout(clickTimeout3);
       clickCount3 = 0;
-    }, 300);
-  } else if (clickCount3 === 2) {
-    browserButton2.classList.remove("icon-selected");
-    clearTimeout(clickTimeout1);
-    clickCount3 = 0;
-    browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
-  }
-});
+      browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
+    }
+  });
+}
 
 //can mauri
-const browserButton3 = document.getElementById("browser3Button");
-let clickCount4 = 0;
-let clickTimeout4;
+function browser3Button(){
+  const browserButton3 = document.getElementById("browser3Button");
+  let clickCount4 = 0;
+  let clickTimeout4;
 
-browserButton3.addEventListener("click", function () {
-  clickCount4++;
-  if (clickCount4 === 1) {
-    browserButton3.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!browserButton3.contains(event.target)) {
-        browserButton3.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout4 = setTimeout(function () {
+  browserButton3.addEventListener("click", function () {
+    clickCount4++;
+    if (clickCount4 === 1) {
+      browserButton3.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!browserButton3.contains(event.target)) {
+          browserButton3.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout4 = setTimeout(function () {
+        clickCount4 = 0;
+      }, 300);
+    } else if (clickCount4 === 2) {
+      browserButton3.classList.remove("icon-selected");
+      clearTimeout(clickTimeout4);
       clickCount4 = 0;
-    }, 300);
-  } else if (clickCount4 === 2) {
-    browserButton3.classList.remove("icon-selected");
-    clearTimeout(clickTimeout1);
-    clickCount4 = 0;
-    browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png");
-  }
-});
+      browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png");
+    }
+  });
+}
 
 // deltashop
-const browserButton4 = document.getElementById("browser4Button");
-let clickCount5 = 0;
-let clickTimeout5;
+function browser4Button(){
+  const browserButton4 = document.getElementById("browser4Button");
+  let clickCount5 = 0;
+  let clickTimeout5;
 
-browserButton4.addEventListener("click", function () {
-  clickCount5++;
-  if (clickCount5 === 1) {
-    browserButton4.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!browserButton4.contains(event.target)) {
-        browserButton4.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout5 = setTimeout(function () {
+  browserButton4.addEventListener("click", function () {
+    clickCount5++;
+    if (clickCount5 === 1) {
+      browserButton4.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!browserButton4.contains(event.target)) {
+          browserButton4.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout5 = setTimeout(function () {
+        clickCount5 = 0;
+      }, 300);
+    } else if (clickCount5 === 2) {
+      browserButton4.classList.remove("icon-selected");
+      clearTimeout(clickTimeout5);
       clickCount5 = 0;
-    }, 300);
-  } else if (clickCount5 === 2) {
-    browserButton4.classList.remove("icon-selected");
-    clearTimeout(clickTimeout1);
-    clickCount5 = 0;
-    browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
-  }
-});
+      browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
+    }
+  });
+}
 
 function visit() {
   var addressInput = document.getElementById('address');
@@ -1142,54 +1282,58 @@ function browser(option, name, icon) {
   });
 }
 
-const goBackButton = document.getElementById("gobackButton");
-let clickCount6 = 0;
-let clickTimeout6;
+function goBackButton() {
+  const goBackButton = document.getElementById("gobackButton");
+  let clickCount6 = 0;
+  let clickTimeout6;
 
-goBackButton.addEventListener("click", function () {
-  clickCount6++;
-  if (clickCount6 === 1) {
-    goBackButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!goBackButton.contains(event.target)) {
-        goBackButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout6 = setTimeout(function () {
+  goBackButton.addEventListener("click", function () {
+    clickCount6++;
+    if (clickCount6 === 1) {
+      goBackButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!goBackButton.contains(event.target)) {
+          goBackButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout6 = setTimeout(function () {
+        clickCount6 = 0;
+      }, 300);
+    } else if (clickCount6 === 2) {
+      goBackButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout6);
       clickCount6 = 0;
-    }, 300);
-  } else if (clickCount6 === 2) {
-    goBackButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout6);
-    clickCount6 = 0;
-    goBack();
-  }
-});
+      goBack();
+    }
+  });
+}
 
 // help
-const helpButton = document.getElementById("helpButton");
-let clickCount10 = 0;
-let clickTimeout10;
+function helpButton(){
+  const helpButton = document.getElementById("helpButton");
+  let clickCount10 = 0;
+  let clickTimeout10;
 
-helpButton.addEventListener("click", function () {
-  clickCount10++;
-  if (clickCount10 === 1) {
-    helpButton.classList.add("icon-selected");
-    document.addEventListener("click", function (event) {
-      if (!helpButton.contains(event.target)) {
-        helpButton.classList.remove("icon-selected");
-      }
-    });
-    clickTimeout10 = setTimeout(function () {
+  helpButton.addEventListener("click", function () {
+    clickCount10++;
+    if (clickCount10 === 1) {
+      helpButton.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!helpButton.contains(event.target)) {
+          helpButton.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout10 = setTimeout(function () {
+        clickCount10 = 0;
+      }, 300);
+    } else if (clickCount10 === 2) {
+      helpButton.classList.remove("icon-selected");
+      clearTimeout(clickTimeout10);
       clickCount10 = 0;
-    }, 300);
-  } else if (clickCount10 === 2) {
-    helpButton.classList.remove("icon-selected");
-    clearTimeout(clickTimeout10);
-    clickCount10 = 0;
-    help();
-  }
-});
+      help();
+    }
+  });
+}
 
 function help() {
   const windowId = "help_" + Math.random().toString(36).substr(2, 9);
