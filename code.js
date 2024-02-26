@@ -34,7 +34,7 @@ if (responsive.matches) {
       bootLogo.remove();
       setTimeout(() => {
         myPC();
-      } , 500);
+      } , 300);
     });
   }
 }
