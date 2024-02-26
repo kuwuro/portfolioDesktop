@@ -1,7 +1,7 @@
 const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
-const areaWidth = screenWidth * 0.5;
-const areaHeight = screenHeight * 0.5;
+const areaWidth = screenWidth * 0.7;
+const areaHeight = screenHeight * 0.7;
 const areaLeft = (screenWidth - areaWidth) / 3;
 const areaTop = (screenHeight - areaHeight) / 3;
 var startMenuOpen = false;
@@ -9,7 +9,11 @@ var windowsOpen = 0;
 var focusedWindow = null;
 const bootOverlay = document.getElementById("bootOverlay");
 const bootLogo = document.getElementById("bootLogo");
-const responsive = window.matchMedia("(max-width: 800px)");
+const responsive = window.matchMedia("(max-width: 800px)");  
+if (localStorage.getItem("showFirstTimePopup") === null) {
+  localStorage.setItem("showFirstTimePopup", "true");
+}
+let showFirstTimePopup = localStorage.getItem("showFirstTimePopup");
 
 // mediaquery for phones
 if (responsive.matches) {
@@ -33,8 +37,12 @@ if (responsive.matches) {
       bootOverlay.remove();
       bootLogo.remove();
       setTimeout(() => {
-        myPC();
-      } , 300);
+        if (showFirstTimePopup === "false") {
+          return;
+        } else {
+          myPC();
+        }
+      }, 300);
     });
   }
 }
@@ -46,9 +54,9 @@ const desktopIcons = [
   { id: "about", label: "About", iconSrc: "media/notepad.png", action: () => about() },
   { id: "experience", label: "Experience", iconSrc: "media/experience.png", action: () => experience() },
   { id: "contact", label: "Contact", iconSrc: "media/contact.png", action: () => contact() },
-  { id: "help", label: "Help", iconSrc: "media/help.png", action: () => help()},
-  { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects()},
-  { id: "goback", label: "Switch portfolio", iconSrc: "media/goback.png", action: () => goBack()},
+  { id: "help", label: "Help", iconSrc: "media/help.png", action: () => help() },
+  { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects() },
+  { id: "goback", label: "Switch portfolio", iconSrc: "media/goback.png", action: () => goBack() },
   { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png") },
   { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png") },
   { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png") },
@@ -624,6 +632,12 @@ function myPCButton(){
 }
 
 function myPC() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
+  startMenuOpen = false;
   const windowId = "myPC_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -654,6 +668,9 @@ function myPC() {
             <h2>web designer & developer</h2>
             <p>Welcome to my interactive portfolio.<br>Explore my work that merges aesthetics with functionality, and discover things you didn't think possible on a browser.</p>
             <p>If you don't know where to start, double-click on the <strong>Help</strong> icon.<br> You can find it in the desktop's <strong>top right corner</strong>.</p>
+            <br>
+            <input type="checkbox" id="${windowId}_checkbox" class="firstTimePopup" value="firstTimeCheckbox" />
+            <label for="${windowId}_checkbox">Show this message on next startup</label>
           </div>
           <div class="image">
             <img src="media/pc.gif" alt="pc">
@@ -665,7 +682,7 @@ function myPC() {
   const myPCElement = document.getElementById(windowId);
   myPCElement.style.display = "block";
   myPCElement.style.width = "700px";
-  myPCElement.style.height = "350px";
+  myPCElement.style.height = "400px";
   
   const randomLeft = Math.floor(Math.random() * (areaWidth - myPCElement.offsetWidth));
   const randomTop = Math.floor(Math.random() * (areaHeight - myPCElement.offsetHeight));
@@ -692,6 +709,19 @@ function myPC() {
   });
   myPCElement.addEventListener("mousedown", function () {
     bringToFront(windowId);
+  });
+
+  const firstTimePopups = document.querySelectorAll(".firstTimePopup");
+
+  firstTimePopups.forEach((checkbox) => {
+    checkbox.checked = showFirstTimePopup === "true";
+  });
+
+  firstTimePopups.forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+      showFirstTimePopup = this.checked;
+      localStorage.setItem("showFirstTimePopup", showFirstTimePopup);
+    });
   });
 }
 
@@ -723,6 +753,11 @@ function aboutButton(){
 }
 
 function about() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -750,9 +785,6 @@ function about() {
         <div class="content">
           <div class="description">
           <p>this will be the about me page</p>
-          </div>
-          <div class="image">
-            <img src="media/pc.gif" alt="pc">
           </div>
         </div>
       </div>
@@ -819,6 +851,11 @@ function experienceButton(){
 }
 
 function experience() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "experience_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -846,9 +883,6 @@ function experience() {
         <div class="content">
           <div class="description">
           <p>this will be the experience page</p>
-          </div>
-          <div class="image">
-            <img src="media/pc.gif" alt="pc">
           </div>
         </div>
       </div>
@@ -915,6 +949,11 @@ function contactButton(){
 }
 
 function contact() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "contact_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -942,9 +981,6 @@ function contact() {
         <div class="content">
           <div class="description">
           <p>this will be the contact page</p>
-          </div>
-          <div class="image">
-            <img src="media/pc.gif" alt="pc">
           </div>
         </div>
       </div>
@@ -1011,6 +1047,11 @@ function projectsButton(){
 }
 
 function projects() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "projects_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -1038,9 +1079,6 @@ function projects() {
         <div class="content">
           <div class="description">
           <p>this will be the projects page</p>
-          </div>
-          <div class="image">
-            <img src="media/pc.gif" alt="pc">
           </div>
         </div>
       </div>
@@ -1205,6 +1243,11 @@ function handleKeyPress(event) {
 }
 
 function browser(option, name, icon) {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "about_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -1336,6 +1379,11 @@ function helpButton(){
 }
 
 function help() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const windowId = "help_" + Math.random().toString(36).substr(2, 9);
   const taskbarBlockId = "taskbarBlock_" + Math.random().toString(36).substr(2, 9);
 
@@ -1363,9 +1411,6 @@ function help() {
         <div class="content">
           <div class="description">
           <p>this will be the help page</p>
-          </div>
-          <div class="image">
-            <img src="media/pc.gif" alt="pc">
           </div>
         </div>
       </div>
@@ -1406,6 +1451,11 @@ function help() {
 }
 
 function goBack() {
+  if (startMenuOpen) {
+    startButton.classList.toggle("start-menu-open");
+    startMenu.style.display = "none";
+    startMenuOpen = false;
+  }
   const overlay = document.createElement("div");
   overlay.style.margin = "0";
   overlay.style.padding = "0";
