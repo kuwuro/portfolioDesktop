@@ -104,12 +104,12 @@ body{
    background: url("media/wallpapers/wallpaperdefault.jpg");
    background-size: cover;
    height: calc(100% - 80px);
-   width: 100%;
+   width: auto;
    padding: 20px 0px;
 }
 
 #desktopIconsTable {
-   table-layout: fixed;
+   table-layout: auto;
    width: 100%;
  }
 
