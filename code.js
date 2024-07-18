@@ -1167,7 +1167,7 @@ function browser2Button(){
       browserButton2.classList.remove("icon-selected");
       clearTimeout(clickTimeout3);
       clickCount3 = 0;
-      browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
+      browser("https://kuwuro.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
     }
   });
 }
@@ -1221,7 +1221,7 @@ function browser4Button(){
       browserButton4.classList.remove("icon-selected");
       clearTimeout(clickTimeout5);
       clickCount5 = 0;
-      browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
+      browser("https://kuwuro.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
     }
   });
 }
