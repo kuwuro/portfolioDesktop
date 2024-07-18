@@ -58,9 +58,9 @@ const desktopIcons = [
   { id: "projects", label: "Projects", iconSrc: "media/projects.png", action: () => projects() },
   { id: "goback", label: "Switch portfolio", iconSrc: "media/goback.png", action: () => goBack() },
   { id: "browser1", label: "DeltaBark's", iconSrc: "media/deltabarks.png", action: () => browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png") },
-  { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://enricarmengol.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png") },
+  { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://kuwuro.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png") },
   { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png") },
-  { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://enricarmengol.github.io/deltashop/", "DeltaShop", "media/deltashop.png") },
+  { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://kuwuro.github.io/deltashop/", "DeltaShop", "media/deltashop.png") },
 ];
 
 function generateDesktopIcons() {
