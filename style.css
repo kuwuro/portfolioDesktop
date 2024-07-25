@@ -456,8 +456,16 @@ body{
    overflow: auto;
    display: flex;
    justify-content: center;
-   align-items: center;   
+   align-items: center;
    padding: 20px;
+   position: relative;
+}
+
+.window .body .description{   
+   min-width: 200px;
+   max-width: 600px;
+   top: 0px;
+   left: 0px;
 }
 
 .window .body .browserContent{
@@ -557,4 +565,27 @@ iframe{
    background:url(media/loading.gif) center center no-repeat;
    background-size: 50px;
    height: 100%;
+}
+
+.rainbow-letters {
+   transition: color .5s;
+}
+ 
+.rainbow-letters:hover{
+   color: rgb(183, 59, 192);
+}
+
+.rainbow-letters span {
+   position: relative;
+   display: inline-block;
+   animation-delay: calc(.1s * var(--i));    
+}
+
+@keyframes waviy {
+   0%, 100% {
+       transform: translate3d(0, 0, 0);
+   }
+   50% {
+       transform: translate3d(0, -4px, 0);
+   }
 }

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="example.css">
+</head>
+<body>
+    <div id="${windowId}" class="window">
+        <div class="resizer corner tl"></div>
+        <div class="resizer corner tr"></div>
+        <div class="resizer corner bl"></div>
+        <div class="resizer corner br"></div>
+        <div class="resizer t"></div>
+        <div class="resizer b"></div>
+        <div class="resizer l"></div>
+        <div class="resizer r"></div>      
+        <div class="body">
+          <div class="topbar">
+            <div class="windowname">
+              <h3 class="font">About Me</h3>
+            </div>
+            <div class="btns">
+              <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
+              <button onclick="maximize('${windowId}')">&#10064</button>
+              <button onclick="closeWindow('${windowId}', '${taskbarBlockId}')">X</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="description">
+                <h1>About me</h1>
+                <p>Hi! I'm Enric Armengol, a recent graduate of a <strong>Superior Grade in Web Application Development</strong> (DAW), with a solid technical background. I mainly have a focus on <strong>design and front-end</strong>, but my goal is to expand my back-end knowledge.</p>
+                <p>I've been making websites since I was 16, and this experience has helped shaping what I enjoy. I've learned that putting <strong>care and passion</strong> into my projects makes them truly shine, and that's what drives me to improve and thrive in my work.</p>
+                <p>I love retro aesthetics and old internet culture, which has inspired me to create my portfolio in this format. When I'm not working, I spend most of my time watching movies, playing videogames and investigating new tools to work with, to then include them in my daily workflow.</p>
+            </div>
+            <div class="image">
+                <img src="media/gamecube.gif" alt="Enric Armengol">
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="code.js"></script>
+</body>
+</html>

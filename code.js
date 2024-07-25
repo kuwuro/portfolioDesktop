@@ -124,6 +124,11 @@ function generateDesktopIcons() {
   browser5Button();
 }
 
+function clickSound() {
+  const audio = new Audio("media/click.mp3");
+  audio.play();
+}
+
 function createIconElement(icon) {
   const iconElement = document.createElement("div");
   iconElement.id = icon.id + "Button";
@@ -629,6 +634,7 @@ function myPCButton(){
       myPCButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout);
       clickCount = 0;
+      clickSound();
       myPC();
     }
   });
@@ -750,6 +756,7 @@ function aboutButton(){
       aboutButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout1);
       clickCount1 = 0;
+      clickSound();
       about();
     }
   });
@@ -787,7 +794,16 @@ function about() {
         </div>
         <div class="content">
           <div class="description">
-          <p>this will be the about me page</p>
+            <h1>About me</h1>
+              <p>Hi! I'm Enric Armengol, a recent graduate of a <strong>Superior Grade in Web Application Development</strong> (DAW), with a solid technical background. I mainly have a focus on <strong>design and front-end</strong>, but my goal is to expand my back-end knowledge.</p>
+              <p>I've been making websites since I was 16, and this experience has helped shaping what I enjoy. I've learned that putting <strong>care and passion</strong> into my projects makes them truly shine, and that's what drives me to improve and thrive in my work.</p>
+              <p>I love cats, <a href="https://www.youtube.com/watch?v=QBsALLppJDo" target="_blank" style="text-decoration: none; color: purple;"><strong><span class="rainbow-letters">
+                <span>r</span><span>e</span><span>t</span><span>r</span><span>o</span>
+                <span>a</span><span>e</span><span>s</span><span>t</span><span>h</span><span>e</span><span>t</span><span>i</span><span>c</span><span>s</span></strong></a>
+              and old internet culture, which have inspired me to create my portfolio in this format. When I'm not working, I spend most of my time playing videogames, watching movies and investigating new tools to work with, to then include them in my daily workflow.</p>
+          </div>
+          <div class="image">
+              <img src="media/porygif.gif" alt="porygon" style="margin: 40px 25px 0px 45px; width: 200px;">
           </div>
         </div>
       </div>
@@ -795,8 +811,20 @@ function about() {
   windowsOpen++;
   const aboutElement = document.getElementById(windowId);
   aboutElement.style.display = "block";
-  aboutElement.style.width = "600px";
-  aboutElement.style.height = "350px";
+  aboutElement.style.width = "800px";
+  aboutElement.style.height = "425px";
+
+  document.querySelector('.rainbow-letters').addEventListener("mouseenter", function () {
+    document.querySelectorAll('.rainbow-letters span').forEach((span, index) => {
+      span.style.animation = `waviy 2s ease-in-out infinite ${index * 0.05}s`;
+    });
+  });
+
+  document.querySelector('.rainbow-letters').addEventListener("mouseleave", function () {
+    document.querySelectorAll('.rainbow-letters span').forEach((span) => {
+      span.style.animation = "";
+    });
+  });
 
   const randomLeft = Math.floor(Math.random() * (areaWidth - aboutElement.offsetWidth));
   const randomTop = Math.floor(Math.random() * (areaHeight - aboutElement.offsetHeight));
@@ -848,6 +876,7 @@ function experienceButton(){
       experienceButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout7);
       clickCount7 = 0;
+      clickSound();
       experience();
     }
   });
@@ -946,6 +975,7 @@ function contactButton(){
       contactButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout8);
       clickCount8 = 0;
+      clickSound();
       contact();
     }
   });
@@ -1044,6 +1074,7 @@ function projectsButton(){
       projectsButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout9);
       clickCount9 = 0;
+      clickSound();
       projects();
     }
   });
@@ -1143,6 +1174,7 @@ function browser1Button(){
       browserButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout2);
       clickCount2 = 0;
+      clickSound();
       browser("https://www.deltabarks.com", "DeltaBark's", "media/deltabarks.png");
     }
   });
@@ -1170,6 +1202,7 @@ function browser2Button(){
       browserButton2.classList.remove("icon-selected");
       clearTimeout(clickTimeout3);
       clickCount3 = 0;
+      clickSound();
       browser("https://kuwuro.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png");
     }
   });
@@ -1197,6 +1230,7 @@ function browser3Button(){
       browserButton3.classList.remove("icon-selected");
       clearTimeout(clickTimeout4);
       clickCount4 = 0;
+      clickSound();
       browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png");
     }
   });
@@ -1224,6 +1258,7 @@ function browser4Button(){
       browserButton4.classList.remove("icon-selected");
       clearTimeout(clickTimeout5);
       clickCount5 = 0;
+      clickSound();
       browser("https://kuwuro.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
     }
   });
@@ -1250,6 +1285,7 @@ function browser5Button(){
       browserButton5.classList.remove("icon-selected");
       clearTimeout(clickTimeout6);
       clickCount6 = 0;
+      clickSound();
       browser("https://fundflow.arcedo.dev", "fundflow", "media/fundflow.png")
     }
   });
@@ -1267,7 +1303,7 @@ function openTab(target) {
 
 function handleKeyPress(event) {
   if (event.keyCode === 13) {
-      visit();
+    visit();
   }
 }
 
@@ -1293,7 +1329,7 @@ function browser(option, name, icon) {
       <div class="body">
         <div class="topbar">
           <div class="windowname">
-            <h3 class="font">${name}</h3>
+            <h3 class="font">${name} - Browser</h3>
           </div>
           <div class="btns">
             <button onclick="minimize('${windowId}', '${taskbarBlockId}')">_</button>
@@ -1402,6 +1438,7 @@ function helpButton(){
       helpButton.classList.remove("icon-selected");
       clearTimeout(clickTimeout10);
       clickCount10 = 0;
+      clickSound();
       help();
     }
   });
