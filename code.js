@@ -61,6 +61,7 @@ const desktopIcons = [
   { id: "browser2", label: "Psycomputers", iconSrc: "media/psycomputers.png", action: () => browser("https://kuwuro.github.io/psycomputers/", "Psycomputers", "media/psycomputers.png") },
   { id: "browser3", label: "Can Mauri", iconSrc: "media/canmauri.png", action: () => browser("https://canmauri.com/", "Can Mauri", "media/canmauri.png") },
   { id: "browser4", label: "DeltaShop", iconSrc: "media/deltashop.png", action: () => browser("https://kuwuro.github.io/deltashop/", "DeltaShop", "media/deltashop.png") },
+  { id: "browser5", label: "fundflow", iconSrc: "media/fundflow.png", action: () => browser("https://fundflow.arcedo.dev", "fundflow", "media/fundflow.png") },
 ];
 
 function generateDesktopIcons() {
@@ -74,6 +75,7 @@ function generateDesktopIcons() {
     "projects": { row: 0, col: 1 },
     "browser1": { row: 0, col: 2 },
     "browser3": { row: 0, col: 3 },
+    "browser5" : { row: 0, col: 4 },
     "help": { row: 0, col: 11 },
     "goback": { row: 0, col: 12 },
     "about": { row: 1, col: 0 },
@@ -119,6 +121,7 @@ function generateDesktopIcons() {
   browser2Button();
   browser3Button();
   browser4Button();
+  browser5Button();
 }
 
 function createIconElement(icon) {
@@ -1222,6 +1225,32 @@ function browser4Button(){
       clearTimeout(clickTimeout5);
       clickCount5 = 0;
       browser("https://kuwuro.github.io/deltashop/", "DeltaShop", "media/deltashop.png");
+    }
+  });
+}
+
+function browser5Button(){
+  const browserButton5 = document.getElementById("browser5Button");
+  let clickCount6 = 0;
+  let clickTimeout6;
+
+  browserButton5.addEventListener("click", function () {
+    clickCount6++;
+    if (clickCount6 === 1) {
+      browserButton5.classList.add("icon-selected");
+      document.addEventListener("click", function (event) {
+        if (!browserButton5.contains(event.target)) {
+          browserButton5.classList.remove("icon-selected");
+        }
+      });
+      clickTimeout6 = setTimeout(function () {
+        clickCount6 = 0;
+      }, 300);
+    } else if (clickCount6 === 2) {
+      browserButton5.classList.remove("icon-selected");
+      clearTimeout(clickTimeout6);
+      clickCount6 = 0;
+      browser("https://fundflow.arcedo.dev", "fundflow", "media/fundflow.png")
     }
   });
 }
