@@ -981,6 +981,12 @@ function contactButton(){
   });
 }
 
+function copyMail() {
+  const mail = "armengolgarciaenric@gmail.com";
+  navigator.clipboard.writeText(mail);
+  alert("Copied to clipboard: " + mail);
+}
+
 function contact() {
   if (startMenuOpen) {
     startButton.classList.toggle("start-menu-open");
@@ -1012,8 +1018,23 @@ function contact() {
           </div>
         </div>
         <div class="content">
-          <div class="description">
-          <p>this will be the contact page</p>
+          <div class="description" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <div style="display: flex;">
+                  <img src="media/contactglobe.gif" alt="" style="width: 80px;">
+                  <h1 style="padding-top: 5px;">contact me</h1>
+                  <img src="media/contactglobe.gif" alt="" style="width: 80px;">
+              </div>
+              <div class="contactButtons">
+                  <a href="javascript:void(0)" onclick="copyMail()"><img src="media/mail.png" alt="" style="width: 45px;"></a>
+                  <a href="https://github.com/kuwuro" target="_blank"><img src="media/github.png" alt="" style="width: 40px; height: 40px;"></a>
+                  <a href="https://www.linkedin.com/in/enric-armengol/" target="_blank"><img src="media/linkedin.png" alt="" style="width: 40px; height: 40px;"></a>
+              </div>   
+              <p style="max-width: 480px; text-align: center; margin-top: 30px;">If you're interested in working with me, want to look at my stuff, or if you just want to chat, feel free to contact me through any of the socials above.</p> 
+              <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0px; padding: 0px; gap: 5px;">
+                  <p style="margin: 0px; padding: 0px; font-size: 1.1em;"><strong>Site by Enric Armengol // 2024</strong></p>     
+                  <p style="margin: 0px; padding: 0px; font-size: 0.9em;">Made using <strong><span style="color: #E44D26">HTML</span></strong>, <strong><span style="color: #264DE4">CSS</span></strong> and <strong><span style="color: #D7BF05">JS</span></strong></p>
+                  <p style="max-width: 400px; text-align: center; font-size: 0.8em; opacity: 0.7; margin: 0px; padding: 0px">All rights to the images and other materials used belong to their respective owners. I do not claim ownership over any third-party content used.</p>
+              </div>                 
           </div>
         </div>
       </div>
@@ -1022,7 +1043,7 @@ function contact() {
   const contactElement = document.getElementById(windowId);
   contactElement.style.display = "block";
   contactElement.style.width = "600px";
-  contactElement.style.height = "350px";
+  contactElement.style.height = "380px";
 
   const randomLeft = Math.floor(Math.random() * (areaWidth - contactElement.offsetWidth));
   const randomTop = Math.floor(Math.random() * (areaHeight - contactElement.offsetHeight));

@@ -1,0 +1,11 @@
+.contactButtons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 40px;
+}
+
+.contactButtons a:hover{
+    transform: translate(0, -5px) scale(1.1);
+}
