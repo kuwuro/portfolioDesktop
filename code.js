@@ -1583,7 +1583,7 @@ function goBack() {
     setTimeout(function () {
       secondOverlay.style.opacity = "1";
       secondOverlay.addEventListener("transitionend", function () {
-        window.location.href = "https://portfolio-peach-chi-53.vercel.app";
+        window.location.href = "https://www.enricarmengol.com";
       });
     }, 500);
   });
