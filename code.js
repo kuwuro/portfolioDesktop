@@ -1565,6 +1565,8 @@ function goBack() {
   setTimeout(fadeToBlack, 50);
 
   overlay.addEventListener("transitionend", function () {
-      window.location.href = "https://www.enricarmengol.com";
+    setTimeout(() => {
+        window.location.href = "https://www.enricarmengol.com";
+      }, 500);
   });
 }
