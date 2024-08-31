@@ -1557,21 +1557,6 @@ function goBack() {
   overlay.style.transition = "opacity 0.5s";
   document.body.appendChild(overlay);
 
-  const secondOverlay = document.createElement("div");
-  secondOverlay.style.margin = "0";
-  secondOverlay.style.padding = "0";
-  secondOverlay.style.position = "fixed";
-  secondOverlay.style.zIndex = "2006";
-  secondOverlay.style.top = "0";
-  secondOverlay.style.left = "0";
-  secondOverlay.style.width = "100%";
-  secondOverlay.style.height = "100%";
-  secondOverlay.style.background = "url('media/wallpapers/wallpapertransition.png') no-repeat center center";
-  secondOverlay.style.backgroundSize = "cover";
-  secondOverlay.style.opacity = "0";
-  secondOverlay.style.transition = "opacity 1.5s";
-  document.body.appendChild(secondOverlay);
-
   function fadeToBlack() {
     overlay.style.opacity = "1";
     document.getElementById("taskbar").style.zIndex = "0";
@@ -1580,11 +1565,6 @@ function goBack() {
   setTimeout(fadeToBlack, 50);
 
   overlay.addEventListener("transitionend", function () {
-    setTimeout(function () {
-      secondOverlay.style.opacity = "1";
-      secondOverlay.addEventListener("transitionend", function () {
-        window.location.href = "https://www.enricarmengol.com";
-      });
-    }, 500);
+      window.location.href = "https://www.enricarmengol.com";
   });
 }
