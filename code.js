@@ -1577,14 +1577,11 @@ function goBack() {
 
   overlay.addEventListener("transitionend", function () {
     setTimeout(function () {
-      overlay.style.opacity = "1";
-      overlay.addEventListener("transitionend", function () {
-        if (siteName === "Enric Armengol") {
+      if (siteName === "Enric Armengol") {
         window.location.href = "https://enricarmengol.com";
-        } else {
-          window.location.href = "https://kuwu.ro";
-        }
-      });
+      } else {
+        window.location.href = "https://kuwu.ro";
+      }
     }, 500);
   });
 }
