@@ -1577,8 +1577,8 @@ function goBack() {
 
   overlay.addEventListener("transitionend", function () {
     setTimeout(function () {
-      secondOverlay.style.opacity = "1";
-      secondOverlay.addEventListener("transitionend", function () {
+      overlay.style.opacity = "1";
+      overlay.addEventListener("transitionend", function () {
         if (siteName === "Enric Armengol") {
         window.location.href = "https://enricarmengol.com";
         } else {
