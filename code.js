@@ -4,6 +4,7 @@ const areaWidth = screenWidth * 0.7;
 const areaHeight = screenHeight * 0.7;
 const areaLeft = (screenWidth - areaWidth) / 3;
 const areaTop = (screenHeight - areaHeight) / 3;
+const siteName = "";
 var startMenuOpen = false;
 var windowsOpen = 0;
 var focusedWindow = null;
@@ -48,6 +49,14 @@ if (responsive.matches) {
 }
 
 document.addEventListener('contextmenu', event => event.preventDefault());
+
+if (window.location.href.includes("enric")) {
+  document.title = "Enric Armengol • Web designer";
+  siteName = "Enric Armengol";
+} else {
+  document.title = "kuwuro • Web designer";
+  siteName = "kuwuro";
+}
 
 const desktopIcons = [
   { id: "myPC", label: "My PC", iconSrc: "media/root.png", action: () => myPC() },
@@ -673,7 +682,7 @@ function myPC() {
         </div>
         <div class="content">
           <div class="description">
-            <h1>Enric Armengol</h1>
+            <h1>${siteName}</h1>
             <h2>web designer & developer</h2>
             <p>Welcome to my interactive portfolio.<br>Explore my work that merges aesthetics with functionality, and discover things you didn't think possible on a browser.</p>
             <p>If you don't know where to start, double-click on the <strong>Help</strong> icon.<br> You can find it in the desktop's <strong>top right corner</strong>.</p>
@@ -795,7 +804,7 @@ function about() {
         <div class="content">
           <div class="description">
             <h1>About me</h1>
-              <p>Hi! I'm Enric Armengol, a recent graduate of a <strong>Superior Grade in Web Application Development</strong> (DAW), with a solid technical background. I mainly have a focus on <strong>design and front-end</strong>, but my goal is to expand my back-end knowledge.</p>
+              <p>Hi! I'm ${siteName}, a recent graduate of a <strong>Superior Grade in Web Application Development</strong> (DAW), with a solid technical background. I mainly have a focus on <strong>design and front-end</strong>, but my goal is to expand my back-end knowledge.</p>
               <p>I've been making websites since I was 16, and this experience has helped shaping what I enjoy. I've learned that putting <strong>care and passion</strong> into my projects makes them truly shine, and that's what drives me to improve and thrive in my work.</p>
               <p>I love cats, <a href="https://www.youtube.com/watch?v=QBsALLppJDo" target="_blank" style="text-decoration: none; color: purple;"><strong><span class="rainbow-letters">
                 <span>r</span><span>e</span><span>t</span><span>r</span><span>o</span>
@@ -1025,13 +1034,11 @@ function contact() {
                   <img src="media/contactglobe.gif" alt="" style="width: 80px;">
               </div>
               <div class="contactButtons">
-                  <a href="javascript:void(0)" onclick="copyMail()"><img src="media/mail.png" alt="" style="width: 45px;"></a>
-                  <a href="https://github.com/kuwuro" target="_blank"><img src="media/github.png" alt="" style="width: 40px; height: 40px;"></a>
-                  <a href="https://www.linkedin.com/in/enric-armengol/" target="_blank"><img src="media/linkedin.png" alt="" style="width: 40px; height: 40px;"></a>
+                  <p>disabled for now, check back later</p>
               </div>   
               <p style="max-width: 480px; text-align: center; margin-top: 30px;">If you're interested in working with me, want to look at my stuff, or if you just want to chat, feel free to contact me through any of the socials above.</p> 
               <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0px; padding: 0px; gap: 5px;">
-                  <p style="margin: 0px; padding: 0px; font-size: 1.1em;"><strong>Site by Enric Armengol // 2024</strong></p>     
+                  <p style="margin: 0px; padding: 0px; font-size: 1.1em;"><strong>Site by ${siteName} // 2024</strong></p>     
                   <p style="margin: 0px; padding: 0px; font-size: 0.9em;">Made using <strong><span style="color: #E44D26">HTML</span></strong>, <strong><span style="color: #264DE4">CSS</span></strong> and <strong><span style="color: #D7BF05">JS</span></strong></p>
                   <p style="max-width: 400px; text-align: center; font-size: 0.8em; opacity: 0.7; margin: 0px; padding: 0px">All rights to the images and other materials used belong to their respective owners. I do not claim ownership over any third-party content used.</p>
               </div>                 
@@ -1040,6 +1047,10 @@ function contact() {
       </div>
     </div>`);
   windowsOpen++;
+  // contact buttons:
+  // <a href="javascript:void(0)" onclick="copyMail()"><img src="media/mail.png" alt="" style="width: 45px;"></a>
+  // <a href="https://github.com/kuwuro" target="_blank"><img src="media/github.png" alt="" style="width: 40px; height: 40px;"></a>
+  // <a href="https://www.linkedin.com/in/enric-armengol/" target="_blank"><img src="media/linkedin.png" alt="" style="width: 40px; height: 40px;"></a>
   const contactElement = document.getElementById(windowId);
   contactElement.style.display = "block";
   contactElement.style.width = "600px";
@@ -1583,7 +1594,11 @@ function goBack() {
     setTimeout(function () {
       secondOverlay.style.opacity = "1";
       secondOverlay.addEventListener("transitionend", function () {
-        window.location.href = "https://portfolio-peach-chi-53.vercel.app";
+        if (siteName === "Enric Armengol") {
+        window.location.href = "https://enricarmengol.com";
+        } else {
+          window.location.href = "https://kuwu.ro";
+        }
       });
     }, 500);
   });
